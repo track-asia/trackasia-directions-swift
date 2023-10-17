@@ -46,8 +46,8 @@ struct Command: ParsableCommand {
     }
     
     static var configuration = CommandConfiguration(
-        commandName: "trackasia-directions-swift",
-        abstract: "'trackasia-directions-swift' is a command line tool, designed to round-trip an arbitrary, JSON-formatted Directions or Map Matching API response through model objects and back to JSON.",
+        commandName: "mapbox-directions-swift",
+        abstract: "'mapbox-directions-swift' is a command line tool, designed to round-trip an arbitrary, JSON-formatted Directions or Map Matching API response through model objects and back to JSON.",
         subcommands: [Match.self, Route.self]
     )
     

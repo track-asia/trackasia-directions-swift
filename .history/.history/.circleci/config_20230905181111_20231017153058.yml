@@ -65,7 +65,7 @@ commands:
                 command: |
                     export GITHUB_TOKEN="$(mbx-ci github writer public token)"
                     echo "export GITHUB_TOKEN='${GITHUB_TOKEN}'" >> $BASH_ENV
-                    git remote set-url origin "https://x-access-token:${GITHUB_TOKEN}@github.com/track-asia/trackasia-directions-swift.git"
+                    git remote set-url origin "https://x-access-token:${GITHUB_TOKEN}@github.com/mapbox/trackasia-directions-swift.git"
                     git config user.email "release-bot@mapbox.com"
                     git config user.name "Mapbox Releases"
 
@@ -185,7 +185,7 @@ jobs:
       - run:
           name: "Create integration Cartfile"
           command: |
-            echo 'github "track-asia/trackasia-directions-swift"' \"$CIRCLE_SHA1\" > Cartfile
+            echo 'github "mapbox/trackasia-directions-swift"' \"$CIRCLE_SHA1\" > Cartfile
       - run:
           name: "Build"
           command: |
@@ -304,7 +304,7 @@ jobs:
           name: Update version
           command: |
             export GITHUB_WRITER_TOKEN=$(mbx-ci github writer public token)
-            git remote set-url origin "https://x-access-token:$GITHUB_WRITER_TOKEN@github.com/track-asia/trackasia-directions-swift"
+            git remote set-url origin "https://x-access-token:$GITHUB_WRITER_TOKEN@github.com/mapbox/trackasia-directions-swift"
             git config --global user.email no-reply@mapbox.com && git config --global user.name mapbox-ci
             VERSION=$( echo << pipeline.git.branch >> | sed 's/^trigger-update-version-//' )
             ./scripts/update-version.sh v$VERSION

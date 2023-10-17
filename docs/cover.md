@@ -9,7 +9,7 @@ Mapbox Directions pairs well with [MapboxGeocoder.swift](https://github.com/mapb
 Specify the following dependency in your [Carthage](https://github.com/Carthage/Carthage) Cartfile:
 
 ```cartfile
-github "mapbox/mapbox-directions-swift" ~> ${MINOR_VERSION}
+github "trackasia/trackasia-directions-swift" ~> ${MINOR_VERSION}
 ```
 
 Or in your [CocoaPods](http://cocoapods.org/) Podfile:
@@ -21,7 +21,7 @@ pod 'MapboxDirections', '~> ${MINOR_VERSION}'
 Or in your [Swift Package Manager](https://swift.org/package-manager/) Package.swift:
 
 ```swift
-.package(url: "https://github.com/mapbox/mapbox-directions-swift.git", from: "0.30.0")
+.package(url: "https://github.com/trackasia/trackasia-directions-swift.git", from: "0.30.0")
 ```
 
 Then `import MapboxDirections`.
@@ -36,4 +36,4 @@ You’ll need a [Mapbox access token](https://docs.mapbox.com/api/#access-tokens
 
 A `Route` object is composed of one or more `RouteLeg`s between waypoints, which in turn are composed of one or more `RouteStep`s between maneuvers. Depending on the request, a `RouteStep` may additionally contain objects representing intersection- and segment-level data. A `Match` object is structured similarly, except that it provides additional details about how the trace matches the road network.
 
-For further details, consult the guides and examples included with this API reference. To integrate real-time turn-by-turn navigation into your iOS application, see “[Navigation SDK](navigation-sdk.html)”. If you have any questions, please see [our help page](https://docs.mapbox.com/help/). We welcome your [bug reports, feature requests, and contributions](https://github.com/mapbox/mapbox-directions-swift/).
+For further details, consult the guides and examples included with this API reference. To integrate real-time turn-by-turn navigation into your iOS application, see “[Navigation SDK](navigation-sdk.html)”. If you have any questions, please see [our help page](https://docs.mapbox.com/help/). We welcome your [bug reports, feature requests, and contributions](https://github.com/trackasia/trackasia-directions-swift/).

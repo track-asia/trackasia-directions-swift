@@ -62,7 +62,7 @@ public enum TransportType: String, Codable {
     case train // cycling
 
     // Custom implementation of decoding is needed to circumvent issue reported in
-    // https://github.com/mapbox/mapbox-directions-swift/issues/413
+    // https://github.com/trackasia/trackasia-directions-swift/issues/413
     public init(from decoder: Decoder) throws {
         let valueContainer = try decoder.singleValueContainer()
         let rawValue = try valueContainer.decode(String.self)

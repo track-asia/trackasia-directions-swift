@@ -15,7 +15,7 @@ let package = Package(
             targets: ["MapboxDirections"]
         ),
         .executable(
-            name: "trackasia-directions-swift",
+            name: "mapbox-directions-swift",
             targets: ["MapboxDirectionsCLI"]),
     ],
     dependencies: [

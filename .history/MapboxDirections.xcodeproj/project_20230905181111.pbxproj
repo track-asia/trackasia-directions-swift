@@ -592,7 +592,7 @@
 		2B9F3880272AE23A001DBA12 /* Isochrones.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Isochrones.swift; sourceTree = "<group>"; };
 		2B9F3895272AE277001DBA12 /* IsochroneTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IsochroneTests.swift; sourceTree = "<group>"; };
 		2BA2E745257A667500D7AFC6 /* incidents.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = incidents.json; sourceTree = "<group>"; };
-		2BA98970253F007600B643F6 /* trackasia-directions-swift */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "trackasia-directions-swift"; sourceTree = BUILT_PRODUCTS_DIR; };
+		2BA98970253F007600B643F6 /* mapbox-directions-swift */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "mapbox-directions-swift"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2BBBD05D257E61ED004EB3D6 /* MapboxStreetsRoadClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapboxStreetsRoadClass.swift; sourceTree = "<group>"; };
 		2BBBD08C257FA1CD004EB3D6 /* BlockedLanes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockedLanes.swift; sourceTree = "<group>"; };
 		2BD2553329544D19006C9106 /* URL+Request.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URL+Request.swift"; sourceTree = "<group>"; };
@@ -1095,7 +1095,7 @@
 				DA1A10DE1D0101ED009F82FA /* MapboxDirectionsTests.xctest */,
 				DA1A10FB1D010361009F82FA /* MapboxDirections.framework */,
 				DADD27B51E5AAAD800D31FAD /* Example.app */,
-				2BA98970253F007600B643F6 /* trackasia-directions-swift */,
+				2BA98970253F007600B643F6 /* mapbox-directions-swift */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1155,7 +1155,7 @@
 			);
 			name = MapboxDirectionsCLI;
 			productName = MapboxDirectionsCLI;
-			productReference = 2BA98970253F007600B643F6 /* trackasia-directions-swift */;
+			productReference = 2BA98970253F007600B643F6 /* mapbox-directions-swift */;
 			productType = "com.apple.product-type.tool";
 		};
 		DA1A10AE1D00F8FF009F82FA /* MapboxDirectionsMac */ = {
@@ -2034,7 +2034,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
-				PRODUCT_NAME = "trackasia-directions-swift";
+				PRODUCT_NAME = "mapbox-directions-swift";
 				SDKROOT = macosx;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -2068,7 +2068,7 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				MTL_FAST_MATH = YES;
-				PRODUCT_NAME = "trackasia-directions-swift";
+				PRODUCT_NAME = "mapbox-directions-swift";
 				SDKROOT = macosx;
 				SWIFT_VERSION = 5.0;
 			};

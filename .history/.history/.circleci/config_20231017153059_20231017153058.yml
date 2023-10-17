@@ -356,8 +356,8 @@ jobs:
           name: "Build IntegrationWithNavigationSDK"
           command: |
             cd ..
-            mv project trackasia-directions-swift
-            cd trackasia-directions-swift/IntegrationWithNavigationSDK
+            mv project mapbox-directions-swift
+            cd mapbox-directions-swift/IntegrationWithNavigationSDK
             mv MapboxNavigationSwiftUI.xcodeproj.disabled MapboxNavigationSwiftUI.xcodeproj
             xcodebuild -resolvePackageDependencies
             xcodebuild -scheme MapboxNavigationSwiftUI -destination 'generic/platform=iOS Simulator' -sdk iphonesimulator -configuration Release
