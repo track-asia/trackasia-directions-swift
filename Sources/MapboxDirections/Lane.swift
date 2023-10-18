@@ -1,12 +1,9 @@
 import Foundation
-import Turf
 
 /**
  A lane on the road approaching an intersection.
  */
-struct Lane: Equatable, ForeignMemberContainer {
-    var foreignMembers: JSONObject = [:]
-    
+struct Lane: Equatable {
     /**
      The lane indications specifying the maneuvers that may be executed from the lane.
      */
@@ -50,8 +47,6 @@ extension Lane: Codable {
         try container.encode(isValid, forKey: .valid)
         try container.encodeIfPresent(isActive, forKey: .active)
         try container.encodeIfPresent(validIndication, forKey: .preferred)
-        
-        try encodeForeignMembers(notKeyedBy: CodingKeys.self, to: encoder)
     }
     
     init(from decoder: Decoder) throws {
@@ -60,7 +55,5 @@ extension Lane: Codable {
         isValid = try container.decode(Bool.self, forKey: .valid)
         isActive = try container.decodeIfPresent(Bool.self, forKey: .active)
         validIndication = try container.decodeIfPresent(ManeuverDirection.self, forKey: .preferred)
-        
-        try decodeForeignMembers(notKeyedBy: CodingKeys.self, with: decoder)
     }
 }

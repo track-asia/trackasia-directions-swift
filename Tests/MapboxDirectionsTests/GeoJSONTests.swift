@@ -20,7 +20,7 @@ class GeoJSONTests: XCTestCase {
         var lineString: LineString? = nil
         
         // Correctly encoded zero-length LineString
-        // https://github.com/track-asia/trackasia-navigation-ios/issues/2611
+        // https://github.com/mapbox/mapbox-navigation-ios/issues/2611
         XCTAssertNoThrow(lineString = try LineString(encodedPolyline: "s{byuAnigzhF??", precision: 1e6))
         XCTAssertNotNil(lineString)
         XCTAssertEqual(lineString?.coordinates.count, 2)

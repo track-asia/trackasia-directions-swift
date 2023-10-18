@@ -121,7 +121,7 @@ public struct RoadClasses: OptionSet, CustomStringConvertible {
                 roadClasses.insert(.highOccupancyToll)
             case "unpaved":
                 roadClasses.insert(.unpaved)
-            case "cash_only_tolls":
+            case "cash_only_toll":
                 roadClasses.insert(.cashTollOnly)
             case "":
                 continue
@@ -162,7 +162,7 @@ public struct RoadClasses: OptionSet, CustomStringConvertible {
             descriptions.append("unpaved")
         }
         if contains(.cashTollOnly) {
-            descriptions.append("cash_only_tolls")
+            descriptions.append("cash_only_toll")
         }
         return descriptions.joined(separator: ",")
     }

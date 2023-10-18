@@ -1,5 +1,4 @@
 import Foundation
-import Turf
 
 /**
  `AdministrativeRegion` describes corresponding object on the route.
@@ -8,8 +7,7 @@ import Turf
  
  - seealso: `Intersection.regionCode`, `RouteStep.regionCode(atStepIndex:, intersectionIndex:)`
  */
-public struct AdministrativeRegion: Codable, Equatable, ForeignMemberContainer {
-    public var foreignMembers: JSONObject = [:]
+public struct AdministrativeRegion: Codable, Equatable {
 
     private enum CodingKeys: String, CodingKey {
         case countryCodeAlpha3 = "iso_3166_1_alpha3"
@@ -31,8 +29,6 @@ public struct AdministrativeRegion: Codable, Equatable, ForeignMemberContainer {
         
         countryCode = try container.decode(String.self, forKey: .countryCode)
         countryCodeAlpha3 = try container.decodeIfPresent(String.self, forKey: .countryCodeAlpha3)
-        
-        try decodeForeignMembers(notKeyedBy: CodingKeys.self, with: decoder)
     }
     
     public func encode(to encoder: Encoder) throws {
@@ -40,7 +36,5 @@ public struct AdministrativeRegion: Codable, Equatable, ForeignMemberContainer {
         
         try container.encode(countryCode, forKey: .countryCode)
         try container.encodeIfPresent(countryCodeAlpha3, forKey: .countryCodeAlpha3)
-        
-        try encodeForeignMembers(notKeyedBy: CodingKeys.self, to: encoder)
     }
 }

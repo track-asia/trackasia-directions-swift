@@ -1,14 +1,11 @@
 import Foundation
-import Turf
 
 /**
  Represents a silent waypoint along the `RouteLeg`.
 
  See `RouteLeg.viaWaypoints` for more details.
  */
-public struct SilentWaypoint: Codable, Equatable, ForeignMemberContainer {
-    public var foreignMembers: JSONObject = [:]
-    
+public struct SilentWaypoint: Codable, Equatable {
     public enum CodingKeys: String, CodingKey {
         case waypointIndex = "waypoint_index"
         case distanceFromStart = "distance_from_start"
@@ -35,16 +32,5 @@ public struct SilentWaypoint: Codable, Equatable, ForeignMemberContainer {
         waypointIndex = try container.decode(Int.self, forKey: .waypointIndex)
         distanceFromStart = try container.decode(Double.self, forKey: .distanceFromStart)
         shapeCoordinateIndex = try container.decode(Int.self, forKey: .shapeCoordinateIndex)
-        
-        try decodeForeignMembers(notKeyedBy: CodingKeys.self, with: decoder)
-    }
-    
-    public func encode(to encoder: Encoder) throws {
-        var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encode(waypointIndex, forKey: .waypointIndex)
-        try container.encode(distanceFromStart, forKey: .distanceFromStart)
-        try container.encode(shapeCoordinateIndex, forKey: .shapeCoordinateIndex)
-        
-        try encodeForeignMembers(notKeyedBy: CodingKeys.self, to: encoder)
     }
 }

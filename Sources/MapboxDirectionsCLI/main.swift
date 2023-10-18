@@ -4,13 +4,14 @@ import Foundation
 import MapboxDirections
 import ArgumentParser
 
+
 struct ProcessingOptions: ParsableArguments {
     
-    @Option(name: [.short, .customLong("input")], help: "[Optional] Filepath to the input JSON. If no filepath provided - will fall back to Directions API request using locations in config file.")
-    var inputPath: String?
+    @Option(name: [.short, .customLong("input")], help: "Filepath to the input JSON.")
+    var inputPath: String
     
-    @Argument(help: "Path to a JSON file containing serialized RouteOptions or MatchOptions properties, or the full URL of a Mapbox Directions API or Mapbox Map Matching API request.")
-    var config: String
+    @Option(name: [.short, .customLong("config")], help: "Filepath to the JSON, containing serialized Options data.")
+    var configPath: String
     
     @Option(name: [.short, .customLong("output")], help: "[Optional] Output filepath to save the conversion result. If no filepath provided - will output to the shell.")
     var outputPath: String?
@@ -26,25 +27,6 @@ struct ProcessingOptions: ParsableArguments {
 }
 
 struct Command: ParsableCommand {
-    static var credentials: Credentials {
-        get throws {
-            guard let accessToken = ProcessInfo.processInfo.environment["MAPBOX_ACCESS_TOKEN"] ??
-                    UserDefaults.standard.string(forKey: "MBXAccessToken") else {
-                throw ValidationError("A Mapbox access token is required. Go to <https://account.mapbox.com/access-tokens/>, then set the MAPBOX_ACCESS_TOKEN environment variable to your access token.")
-            }
-            
-            let hostURL: URL?
-            if let host = ProcessInfo.processInfo.environment["MAPBOX_HOST"] ??
-                UserDefaults.standard.string(forKey: "MGLMapboxAPIBaseURL") {
-                hostURL = URL(string: host)
-            } else {
-                hostURL = nil
-            }
-            
-            return Credentials(accessToken: accessToken, host: hostURL)
-        }
-    }
-    
     static var configuration = CommandConfiguration(
         commandName: "trackasia-directions-swift",
         abstract: "'trackasia-directions-swift' is a command line tool, designed to round-trip an arbitrary, JSON-formatted Directions or Map Matching API response through model objects and back to JSON.",
@@ -52,8 +34,12 @@ struct Command: ParsableCommand {
     )
     
     fileprivate static func validateInput(_ options: ProcessingOptions) throws {
-        if !FileManager.default.fileExists(atPath: (options.config as NSString).expandingTildeInPath) && URL(string: options.config) == nil {
-            throw ValidationError("Configuration is a nonexistent file or invalid request URL: \(options.config)")
+        guard FileManager.default.fileExists(atPath: options.inputPath) else {
+            throw ValidationError("Input JSON file `\(options.inputPath)` does not exist.")
+        }
+        
+        guard FileManager.default.fileExists(atPath: options.configPath) else {
+            throw ValidationError("Options JSON file `\(options.configPath)` does not exist.")
         }
     }
 }
@@ -71,7 +57,7 @@ extension Command {
         }
         
         mutating func run() throws {
-            try CodingOperation<MapMatchingResponse, MatchOptions>(options: options, credentials: try credentials).execute()
+            try CodingOperation<MapMatchingResponse, MatchOptions>(options: options).execute()
         }
     }
 }
@@ -89,7 +75,7 @@ extension Command {
         }
         
         mutating func run() throws {
-            try CodingOperation<RouteResponse, RouteOptions>(options: options, credentials: try credentials).execute()
+            try CodingOperation<RouteResponse, RouteOptions>(options: options).execute()
         }
     }
 }

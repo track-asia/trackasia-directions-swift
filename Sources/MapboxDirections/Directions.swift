@@ -9,6 +9,58 @@ typealias JSONDictionary = [String: Any]
 public let MBDirectionsErrorDomain = "com.mapbox.directions.ErrorDomain"
 
 
+/// The user agent string for any HTTP requests performed directly within this library.
+let userAgent: String = {
+    var components: [String] = []
+    
+    if let appName = Bundle.main.infoDictionary?["CFBundleName"] as? String ?? Bundle.main.infoDictionary?["CFBundleIdentifier"] as? String {
+        let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? ""
+        components.append("\(appName)/\(version)")
+    }
+    
+    let libraryBundle: Bundle? = Bundle(for: Directions.self)
+    
+    if let libraryName = libraryBundle?.infoDictionary?["CFBundleName"] as? String, let version = libraryBundle?.infoDictionary?["CFBundleShortVersionString"] as? String {
+        components.append("\(libraryName)/\(version)")
+    }
+    
+    // `ProcessInfo().operatingSystemVersionString` can replace this when swift-corelibs-foundaton is next released:
+    // https://github.com/apple/swift-corelibs-foundation/blob/main/Sources/Foundation/ProcessInfo.swift#L104-L202
+    let system: String
+    #if os(macOS)
+        system = "macOS"
+    #elseif os(iOS)
+        system = "iOS"
+    #elseif os(watchOS)
+        system = "watchOS"
+    #elseif os(tvOS)
+        system = "tvOS"
+    #elseif os(Linux)
+        system = "Linux"
+    #else
+        system = "unknown"
+    #endif
+    let systemVersion = ProcessInfo.processInfo.operatingSystemVersion
+    components.append("\(system)/\(systemVersion.majorVersion).\(systemVersion.minorVersion).\(systemVersion.patchVersion)")
+    
+    let chip: String
+    #if arch(x86_64)
+        chip = "x86_64"
+    #elseif arch(arm)
+        chip = "arm"
+    #elseif arch(arm64)
+        chip = "arm64"
+    #elseif arch(i386)
+        chip = "i386"
+    #else
+        // Maybe fall back on `uname(2).machine`?
+        chip = "unrecognized"
+    #endif
+    components.append("(\(chip))")
+    
+    return components.joined(separator: " ")
+}()
+
 /**
  A `Directions` object provides you with optimal directions between different locations, or waypoints. The directions object passes your request to the [Mapbox Directions API](https://docs.mapbox.com/api/navigation/#directions) and returns the requested information to a closure (block) that you provide. A directions object can handle multiple simultaneous requests. A `RouteOptions` object specifies criteria for the results, such as intermediate waypoints, a mode of transportation, or the level of detail to be returned.
  
@@ -49,7 +101,7 @@ open class Directions: NSObject {
      - parameter credentials: An object containing the credentials used to make the request.
      - parameter result: A `Result` enum that represents the `RouteRefreshResponse` if the request returned successfully, or the error if it did not.
      
-     - postcondition: To update the original route, pass `RouteRefreshResponse.route` into the `Route.refreshLegAttributes(from:)`, `Route.refreshLegIncidents(from:)`, `Route.refreshLegClosures(from:legIndex:legShapeIndex:)` or `Route.refresh(from:refreshParameters:)` methods.
+     - postcondition: To update the original route, pass `RouteRefreshResponse.route` into the `Route.refreshLegAttributes(from:)` method.
      */
     public typealias RouteRefreshCompletionHandler = (_ credentials: Credentials, _ result: Result<RouteRefreshResponse, DirectionsError>) -> Void
     
@@ -376,42 +428,8 @@ open class Directions: NSObject {
      - returns: The data task used to perform the HTTP request. If, while waiting for the completion handler to execute, you no longer want the resulting skeleton routes, cancel this task.
      */
     @discardableResult open func refreshRoute(responseIdentifier: String, routeIndex: Int, fromLegAtIndex startLegIndex: Int = 0, completionHandler: @escaping RouteRefreshCompletionHandler) -> URLSessionDataTask? {
-        _refreshRoute(responseIdentifier: responseIdentifier,
-                      routeIndex: routeIndex,
-                      fromLegAtIndex: startLegIndex,
-                      currentRouteShapeIndex: nil,
-                      completionHandler: completionHandler)
-    }
 
-    /**
-     Begins asynchronously refreshing the route with the given identifier, optionally starting from an arbitrary leg and point along the route.
-     
-     This method retrieves skeleton route data asynchronously from the Mapbox Directions Refresh API over a network connection. If a connection error or server error occurs, details about the error are passed into the given completion handler in lieu of the routes.
-     
-     - precondition: Set `RouteOptions.refreshingEnabled` to `true` when calculating the original route.
-     
-     - parameter responseIdentifier: The `RouteResponse.identifier` value of the `RouteResponse` that contains the route to refresh.
-     - parameter routeIndex: The index of the route to refresh in the original `RouteResponse.routes` array.
-     - parameter startLegIndex: The index of the leg in the route at which to begin refreshing. The response will omit any leg before this index and refresh any leg from this index to the end of the route. If this argument is omitted, the entire route is refreshed.
-     - parameter currentRouteShapeIndex: The index of the route geometry at which to begin refreshing. Indexed geometry must be contained by the leg at `startLegIndex`.
-     - parameter completionHandler: The closure (block) to call with the resulting skeleton route data. This closure is executed on the application’s main thread.
-     - returns: The data task used to perform the HTTP request. If, while waiting for the completion handler to execute, you no longer want the resulting skeleton routes, cancel this task.
-     */
-    @discardableResult open func refreshRoute(responseIdentifier: String, routeIndex: Int, fromLegAtIndex startLegIndex: Int = 0, currentRouteShapeIndex: Int, completionHandler: @escaping RouteRefreshCompletionHandler) -> URLSessionDataTask? {
-        _refreshRoute(responseIdentifier: responseIdentifier,
-                      routeIndex: routeIndex,
-                      fromLegAtIndex: startLegIndex,
-                      currentRouteShapeIndex: currentRouteShapeIndex,
-                      completionHandler: completionHandler)
-    }
-
-    private func _refreshRoute(responseIdentifier: String, routeIndex: Int, fromLegAtIndex startLegIndex: Int, currentRouteShapeIndex: Int?, completionHandler: @escaping RouteRefreshCompletionHandler) -> URLSessionDataTask? {
-        let request: URLRequest
-        if let currentRouteShapeIndex = currentRouteShapeIndex {
-            request = urlRequest(forRefreshing: responseIdentifier, routeIndex: routeIndex, fromLegAtIndex: startLegIndex, currentRouteShapeIndex: currentRouteShapeIndex)
-        } else {
-            request = urlRequest(forRefreshing: responseIdentifier, routeIndex: routeIndex, fromLegAtIndex: startLegIndex)
-        }
+        let request = urlRequest(forRefreshing: responseIdentifier, routeIndex: routeIndex, fromLegAtIndex: startLegIndex)
         let requestTask = urlSession.dataTask(with: request) { (possibleData, possibleResponse, possibleError) in
             if let urlError = possibleError as? URLError {
                 DispatchQueue.main.async {
@@ -480,39 +498,20 @@ open class Directions: NSObject {
     }
     
     open func urlRequest(forRefreshing responseIdentifier: String, routeIndex: Int, fromLegAtIndex startLegIndex: Int) -> URLRequest {
-        _urlRequest(forRefreshing: responseIdentifier,
-                    routeIndex: routeIndex,
-                    fromLegAtIndex: startLegIndex,
-                    currentRouteShapeIndex: nil)
-    }
-
-    open func urlRequest(forRefreshing responseIdentifier: String, routeIndex: Int, fromLegAtIndex startLegIndex: Int, currentRouteShapeIndex: Int) -> URLRequest {
-        _urlRequest(forRefreshing: responseIdentifier,
-                    routeIndex: routeIndex,
-                    fromLegAtIndex: startLegIndex,
-                    currentRouteShapeIndex: currentRouteShapeIndex)
-    }
-
-    private func _urlRequest(forRefreshing responseIdentifier: String, routeIndex: Int, fromLegAtIndex startLegIndex: Int, currentRouteShapeIndex: Int?) -> URLRequest {
-        var params: [URLQueryItem] = authenticationParams
-        if let currentRouteShapeIndex = currentRouteShapeIndex {
-            params.append(URLQueryItem(name: "current_route_geometry_index", value: String(currentRouteShapeIndex)))
-        }
+        let params: [URLQueryItem] = authenticationParams
 
         var unparameterizedURL = URL(string: "directions-refresh/v1/\(ProfileIdentifier.automobileAvoidingTraffic.rawValue)", relativeTo: credentials.host)!
         unparameterizedURL.appendPathComponent(responseIdentifier)
         unparameterizedURL.appendPathComponent(String(routeIndex))
         unparameterizedURL.appendPathComponent(String(startLegIndex))
         var components = URLComponents(url: unparameterizedURL, resolvingAgainstBaseURL: true)!
-
         components.queryItems = params
-
+        
         let getURL = components.url!
         var request = URLRequest(url: getURL)
-        request.setupUserAgentString()
+        request.setValue(userAgent, forHTTPHeaderField: "User-Agent")
         return request
     }
-
     /**
      The GET HTTP URL used to fetch the routes from the API.
      
@@ -541,7 +540,7 @@ open class Directions: NSObject {
         var params = (includesQuery ? options.urlQueryItems : [])
         params.append(contentsOf: authenticationParams)
 
-        let unparameterizedURL = URL(path: includesQuery ? options.path : options.abridgedPath, host: credentials.host)
+        let unparameterizedURL = URL(string: includesQuery ? options.path : options.abridgedPath, relativeTo: credentials.host)!
         var components = URLComponents(url: unparameterizedURL, resolvingAgainstBaseURL: true)!
         components.queryItems = params
         return components.url!
@@ -558,7 +557,6 @@ open class Directions: NSObject {
      - returns: A GET or POST HTTP request to calculate the specified options.
      */
     open func urlRequest(forCalculating options: DirectionsOptions) -> URLRequest {
-        if options.waypoints.count < 2 { assertionFailure("waypoints array requires at least 2 waypoints") }
         let getURL = self.url(forCalculating: options, httpMethod: "GET")
         var request = URLRequest(url: getURL)
         if getURL.absoluteString.count > MaximumURLLength {
@@ -569,7 +567,7 @@ open class Directions: NSObject {
             request.httpMethod = "POST"
             request.httpBody = body
         }
-        request.setupUserAgentString()
+        request.setValue(userAgent, forHTTPHeaderField: "User-Agent")
         return request
     }
 }

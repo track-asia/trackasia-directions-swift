@@ -6,10 +6,8 @@ import Turf
 /**
  A `Waypoint` object indicates a location along a route. It may be the route’s origin or destination, or it may be another location that the route visits. A waypoint object indicates the location’s geographic location along with other optional information, such as a name or the user’s direction approaching the waypoint. You create a `RouteOptions` object using waypoint objects and also receive waypoint objects in the completion handler of the `Directions.calculate(_:completionHandler:)` method.
  */
-public class Waypoint: Codable, ForeignMemberContainerClass {
-    public var foreignMembers: JSONObject = [:]
-    
-    private enum CodingKeys: String, CodingKey, CaseIterable {
+public class Waypoint: Codable {
+    private enum CodingKeys: String, CodingKey {
         case coordinate = "location"
         case coordinateAccuracy
         case targetCoordinate
@@ -19,7 +17,6 @@ public class Waypoint: Codable, ForeignMemberContainerClass {
         case name
         case allowsArrivingOnOppositeSide
         case snappedDistance = "distance"
-        case layer
     }
     
     // MARK: Creating a Waypoint
@@ -53,28 +50,21 @@ public class Waypoint: Codable, ForeignMemberContainerClass {
         }
         
         snappedDistance = try container.decodeIfPresent(LocationDistance.self, forKey: .snappedDistance)
-        
-        layer = try container.decodeIfPresent(Int.self, forKey: .layer)
-        
-        try decodeForeignMembers(notKeyedBy: CodingKeys.self, with: decoder)
     }
     
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         
         try container.encode(LocationCoordinate2DCodable(coordinate), forKey: .coordinate)
-        try container.encodeIfPresent(coordinateAccuracy, forKey: .coordinateAccuracy)
+        try container.encode(coordinateAccuracy, forKey: .coordinateAccuracy)
         let targetCoordinateCodable = targetCoordinate != nil ? LocationCoordinate2DCodable(targetCoordinate!) : nil
-        try container.encodeIfPresent(targetCoordinateCodable, forKey: .targetCoordinate)
+        try container.encode(targetCoordinateCodable, forKey: .targetCoordinate)
         try container.encodeIfPresent(heading, forKey: .heading)
         try container.encodeIfPresent(headingAccuracy, forKey: .headingAccuracy)
         try container.encodeIfPresent(separatesLegs, forKey: .separatesLegs)
         try container.encodeIfPresent(allowsArrivingOnOppositeSide, forKey: .allowsArrivingOnOppositeSide)
         try container.encodeIfPresent(name, forKey: .name)
         try container.encodeIfPresent(snappedDistance, forKey: .snappedDistance)
-        try container.encodeIfPresent(layer, forKey: .layer)
-        
-        try encodeForeignMembers(to: encoder)
     }
     
     /**
@@ -165,13 +155,6 @@ public class Waypoint: Codable, ForeignMemberContainerClass {
      If `true`, the waypoint may be snapped to a road segment that is closed due to a live traffic closure. This property is `false` by default. This property corresponds to the [`snapping_include_closures`](https://docs.mapbox.com/api/navigation/directions/#optional-parameters-for-the-mapboxdriving-traffic-profile) query parameter in the Mapbox Directions API.
      */
     public var allowsSnappingToClosedRoad: Bool = false
-
-    /**
-     A Boolean value indicating whether the waypoint may be snapped to a statically (long-term) closed road in the resulting `RouteResponse`.
-
-     If `true`, the waypoint may be snapped to a road segment statically closed, that is long-term (for example, road under construction). This property is `false` by default. This property corresponds to the [`snapping_include_static_closures`](https://docs.mapbox.com/api/navigation/directions/#optional-parameters-for-the-mapboxdriving-traffic-profile) query parameter in the Mapbox Directions API.
-     */
-    public var allowsSnappingToStaticallyClosedRoad: Bool = false
     
     /**
      The straight-line distance from the coordinate specified in the query to the location it was snapped to in the resulting `RouteResponse`.
@@ -179,15 +162,6 @@ public class Waypoint: Codable, ForeignMemberContainerClass {
      By default, this property is set to `nil`, meaning the waypoint has no snapped distance.
      */
     public var snappedDistance: LocationDistance?
-    
-    /**
-     The [layer](https://wiki.openstreetmap.org/wiki/Key:layer) of road that the waypoint is positioned which is used to filter the road segment that the waypoint will be placed on in Z-order. It is useful for avoiding ambiguity in the case of multi-level roads (such as a tunnel under a road).
-     
-     This property corresponds to the [`layers`](https://docs.mapbox.com/api/navigation/directions/#optional-parameters) query parameter in the Mapbox Directions API. If a matching layer is not found, the Mapbox Directions API will choose a suitable layer according to the other  provided `DirectionsOptions` and `Waypoint` properties.
-     
-     By default, this property is set to `nil`, meaning the route from the `Waypoint` will not be influenced by a layer of road.
-     */
-    public var layer: Int?
     
     // MARK: Getting the Direction of Approach
     

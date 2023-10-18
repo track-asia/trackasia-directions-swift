@@ -3,7 +3,7 @@ Pod::Spec.new do |s|
   # ―――  Spec Metadata  ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
 
   s.name         = "MapboxDirections"
-  s.version      = "2.11.0-alpha.1"
+  s.version      = "2.4.0"
   s.summary      = "Mapbox Directions API wrapper for Swift."
 
   s.description  = <<-DESC
@@ -25,15 +25,15 @@ Pod::Spec.new do |s|
   # ――― Platform Specifics ――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
 
   #  When using multiple platforms
-  s.ios.deployment_target = "12.0"
-  s.osx.deployment_target = "10.14"
-  s.watchos.deployment_target = "5.0"
-  s.tvos.deployment_target = "12.0"
+  s.ios.deployment_target = "10.0"
+  s.osx.deployment_target = "10.12"
+  s.watchos.deployment_target = "3.0"
+  s.tvos.deployment_target = "10.0"
 
 
   # ――― Source Location ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
 
-  s.source       = { :git => "https://github.com/trackasia/trackasia-directions-swift.git", :tag => "v#{s.version.to_s}" }
+  s.source       = { :git => "https://github.com/track-asia/trackasia-directions-swift.git", :tag => "v#{s.version.to_s}" }
 
   # ――― Source Code ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
 
@@ -43,9 +43,9 @@ Pod::Spec.new do |s|
 
   s.requires_arc = true
   s.module_name = "MapboxDirections"
-  s.swift_version = "5.5"
+  s.swift_version = "5.0"
 
   s.dependency "Polyline", "~> 5.0"
-  s.dependency "Turf", "~> 2.6.1"
+  s.dependency "Turf", "~> 2.0"
 
 end

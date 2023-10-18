@@ -24,18 +24,18 @@ To contribute code changes to this project, use either Carthage or Swift Package
 
 ### Using Carthage
 
-1. Install Xcode 13 and [Carthage](https://github.com/Carthage/Carthage/) v0.38 or above.
+1. Install Xcode 12 and [Carthage](https://github.com/Carthage/Carthage/) v0.38 or above.
 1. Run `carthage bootstrap --platform all --use-xcframeworks`.
 1. Once the Carthage build finishes, open MapboxDirections.xcodeproj in Xcode and build the MapboxDirections Mac scheme.
 
 ### Using Swift Package Manager
 
-In Xcode, go to Source Control ‣ Clone, enter `https://github.com/trackasia/trackasia-directions-swift.git`, and click Clone.
+In Xcode, go to Source Control ‣ Clone, enter `https://github.com/track-asia/trackasia-directions-swift.git`, and click Clone.
 
 Alternatively, on the command line:
 
 ```bash
-git clone https://github.com/trackasia/trackasia-directions-swift.git
+git clone https://github.com/track-asia/trackasia-directions-swift.git
 cd trackasia-directions-swift/
 open Package.swift
 ```
@@ -80,10 +80,10 @@ To release a new version of the MapboxDirections package:
 
 1. Run `./scripts/update-version.sh v#.#.#`, where _#.#.#_ is a new version number conforming to [Semantic Versioning](https://semver.org/). Commit the changes with a commit message like `v#.#.#` and open a pull request to get it reviewed and merged.
 1. Tag the merged changes as `v#.#.#`. Push the tag by running `git pull && git push origin v#.#.#`.
-1. [Create a new release](https://github.com/trackasia/trackasia-directions-swift/releases/new/). Add release notes based on the release’s section in the changelog. (Unlike the changelog, release notes accept `#123` syntax for linking to PRs.) Title the release `v#.#.#`. Check “This is a pre-release” if applicable, then click “Publish release”.
+1. [Create a new release](https://github.com/track-asia/trackasia-directions-swift/releases/new/). Add release notes based on the release’s section in the changelog. (Unlike the changelog, release notes accept `#123` syntax for linking to PRs.) Title the release `v#.#.#`. Check “This is a pre-release” if applicable, then click “Publish release”.
 1. Run `pod repo update && pod trunk push MapboxDirections.podspec` (or `pod trunk push MapboxDirections-pre.podspec` for a prerelease) to publish the release on CocoaPods trunk.
-1. Go to [the trackasia-directions-swift project on CircleCI](https://app.circleci.com/pipelines/github/trackasia/trackasia-directions-swift), select the build corresponding to the tagged commit, and click “Approve Publish Documentation”. This step runs `./scripts/publish-documentation.sh v#.#.#` to generate and publish the documentation and pushes it to the `publisher-production` branch.
-1. Wait about 10 minutes for new documentation to go live. (Mapbox employees can check the #publisher channel in Slack for a notification of when the commit has been published.)
+1. Run `./scripts/publish-documentation.sh v#.#.#` to generate and publish the documentation. Create a pull request and set the base branch to `publisher-production`.
+1. Wait for new documentation to be live. Once you merge the branch into `publisher-production`, the new version will be available within 10 minutes. (Mapbox employees can check the #publisher channel in Slack for a notification of when the commit has been published.)
 1. _(Mapbox employees only.)_ [Update various links](https://github.com/mapbox/ios-sdk#mapboxdirectionsswift) to the current docset in the [iOS documentation] site.
 1. _(Mapbox employees only.)_ [Update various links](https://github.com/mapbox/help/blob/publisher-production/docs/upgrading-versions.md) to the current docset in the [help](https://docs.mapbox.com/help/) site.
-1. For a new major version, upgrade the [iOS navigation SDK](https://github.com/track-asia/trackasia-navigation-ios/)’s Cartfile, podspecs, and Package.swift to the new version. 
+1. For a new major version, upgrade the [iOS navigation SDK](https://github.com/mapbox/mapbox-navigation-ios/)’s Cartfile, podspecs, and Package.swift to the new version. 

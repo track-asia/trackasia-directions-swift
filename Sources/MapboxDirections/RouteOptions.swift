@@ -87,16 +87,6 @@ open class RouteOptions: DirectionsOptions {
            let doubleValue = Double(mappedValue) {
             self.maximumWidth = Measurement(value: doubleValue, unit: UnitLength.meters)
         }
-        if let mappedValue = mappedQueryItems[CodingKeys.maximumWeight.stringValue],
-           let doubleValue = Double(mappedValue) {
-            self.maximumWeight = Measurement(value: doubleValue, unit: UnitMass.metricTons)
-        }
-        
-        if let mappedValue = mappedQueryItems[CodingKeys.layers.stringValue] {
-            zip(waypoints, mappedValue.components(separatedBy: ";")).forEach {
-                $0.layer = Int($1) ?? nil
-            }
-        }
         
         let formatter = DateFormatter.ISO8601DirectionsFormatter()
         if let mappedValue = mappedQueryItems[CodingKeys.departAt.stringValue],
@@ -106,9 +96,6 @@ open class RouteOptions: DirectionsOptions {
         if let mappedValue = mappedQueryItems[CodingKeys.arriveBy.stringValue],
            let arriveBy = formatter.date(from: mappedValue) {
             self.arriveBy = arriveBy
-        }
-        if mappedQueryItems[CodingKeys.includesTollPrices.stringValue] == "true" {
-            self.includesTollPrices = true
         }
     }
 
@@ -150,15 +137,12 @@ open class RouteOptions: DirectionsOptions {
         case initialManeuverAvoidanceRadius = "avoid_maneuver_radius"
         case maximumHeight = "max_height"
         case maximumWidth = "max_width"
-        case maximumWeight = "max_weight"
         case alleyPriority = "alley_bias"
         case walkwayPriority = "walkway_bias"
         case speed = "walking_speed"
         case waypointTargets = "waypoint_targets"
         case arriveBy = "arrive_by"
         case departAt = "depart_at"
-        case layers = "layers"
-        case includesTollPrices = "compute_toll_cost"
     }
     
     public override func encode(to encoder: Encoder) throws {
@@ -173,7 +157,6 @@ open class RouteOptions: DirectionsOptions {
         try container.encodeIfPresent(initialManeuverAvoidanceRadius, forKey: .initialManeuverAvoidanceRadius)
         try container.encodeIfPresent(maximumHeight?.converted(to: .meters).value, forKey: .maximumHeight)
         try container.encodeIfPresent(maximumWidth?.converted(to: .meters).value, forKey: .maximumWidth)
-        try container.encodeIfPresent(maximumWeight?.converted(to: .metricTons).value, forKey: .maximumWeight)
         try container.encodeIfPresent(alleyPriority, forKey: .alleyPriority)
         try container.encodeIfPresent(walkwayPriority, forKey: .walkwayPriority)
         try container.encodeIfPresent(speed, forKey: .speed)
@@ -184,10 +167,6 @@ open class RouteOptions: DirectionsOptions {
         }
         if let departAt = departAt {
             try container.encode(formatter.string(from: departAt), forKey: .departAt)
-        }
-        
-        if includesTollPrices {
-            try container.encode(includesTollPrices, forKey: .includesTollPrices)
         }
     }
     
@@ -214,9 +193,6 @@ open class RouteOptions: DirectionsOptions {
         if let maximumWidthValue = try container.decodeIfPresent(Double.self, forKey: .maximumWidth) {
             maximumWidth = Measurement(value: maximumWidthValue, unit: .meters)
         }
-        if let maximumWeightValue = try container.decodeIfPresent(Double.self, forKey: .maximumWeight) {
-            maximumWeight = Measurement(value: maximumWeightValue, unit: .metricTons)
-        }
 
         alleyPriority = try container.decodeIfPresent(DirectionsPriority.self, forKey: .alleyPriority)
 
@@ -232,8 +208,6 @@ open class RouteOptions: DirectionsOptions {
         if let dateString = try container.decodeIfPresent(String.self, forKey: .arriveBy) {
             arriveBy = formatter.date(from: dateString)
         }
-        
-        includesTollPrices = try container.decodeIfPresent(Bool.self, forKey: .includesTollPrices) ?? false
         
         try super.init(from: decoder)
     }
@@ -375,14 +349,6 @@ open class RouteOptions: DirectionsOptions {
     open var maximumWidth: Measurement<UnitLength>?
     
     /**
-     The maximum vehicle weight.
-     
-     If this parameter is provided, the `Directions` will compute a route that includes only roads with a weight limit greater than or equal to the max vehicle weight.
-     This property is supported by `DirectionsProfileIdentifier.automobile` and `DirectionsProfileIdentifier.automobileAvoidingTraffic` profiles.
-     The value must be between 0 and 100 metric tons. If unspecified,  2.5 metric tons is assumed.
-     */
-    open var maximumWeight: Measurement<UnitMass>?
-    /**
      A radius around the starting point in which the API will avoid returning any significant maneuvers.
      
      Use this option when the vehicle is traveling at a significant speed to avoid dangerous maneuvers when re-routing. If a route is not found using the specified value, it will be ignored. Note that if a large radius is used, the API may ignore an important turn and return a long straight path before the first maneuver.
@@ -403,25 +369,16 @@ open class RouteOptions: DirectionsOptions {
     }
     private var _initialManeuverAvoidanceRadius: LocationDistance?
     
-    /**
-     :nodoc:
-     Toggle whether to return calculated toll cost for the route, if data is available.
-     
-     Toll prices are populeted in resulting route's `Route.tollPrices`.
-     Default value is `false`.
-     */
-    open var includesTollPrices = false
-    
     // MARK: Getting the Request URL
     
     override open var urlQueryItems: [URLQueryItem] {
         var params: [URLQueryItem] = [
-            URLQueryItem(name: CodingKeys.includesAlternativeRoutes.stringValue, value: includesAlternativeRoutes.queryString),
-            URLQueryItem(name: CodingKeys.allowsUTurnAtWaypoint.stringValue, value: (!allowsUTurnAtWaypoint).queryString),
+            URLQueryItem(name: CodingKeys.includesAlternativeRoutes.stringValue, value: String(includesAlternativeRoutes)),
+            URLQueryItem(name: CodingKeys.allowsUTurnAtWaypoint.stringValue, value: String(!allowsUTurnAtWaypoint)),
         ]
 
         if includesExitRoundaboutManeuver {
-            params.append(URLQueryItem(name: CodingKeys.includesExitRoundaboutManeuver.stringValue, value: includesExitRoundaboutManeuver.queryString))
+            params.append(URLQueryItem(name: CodingKeys.includesExitRoundaboutManeuver.stringValue, value: String(includesExitRoundaboutManeuver)))
         }
         if let alleyPriority = alleyPriority?.rawValue {
             params.append(URLQueryItem(name: CodingKeys.alleyPriority.stringValue, value: String(alleyPriority)))
@@ -446,17 +403,12 @@ open class RouteOptions: DirectionsOptions {
         }
         
         if refreshingEnabled && profileIdentifier == .automobileAvoidingTraffic {
-            params.append(URLQueryItem(name: CodingKeys.refreshingEnabled.stringValue, value: refreshingEnabled.queryString))
+            params.append(URLQueryItem(name: CodingKeys.refreshingEnabled.stringValue, value: String(refreshingEnabled)))
         }
         
         if waypoints.first(where: { $0.targetCoordinate != nil }) != nil {
             let targetCoordinates = waypoints.filter { $0.separatesLegs }.map { $0.targetCoordinate?.requestDescription ?? "" }.joined(separator: ";")
             params.append(URLQueryItem(name: CodingKeys.waypointTargets.stringValue, value: targetCoordinates))
-        }
-        
-        if waypoints.contains(where: { $0.layer != nil }) {
-            let layers = waypoints.map { $0.layer?.description ?? "" }.joined(separator: ";")
-            params.append(URLQueryItem(name: CodingKeys.layers.stringValue, value: layers))
         }
         
         if let initialManeuverAvoidanceRadius = initialManeuverAvoidanceRadius {
@@ -471,11 +423,6 @@ open class RouteOptions: DirectionsOptions {
         if let maximumWidth = maximumWidth {
             let widthInMeters = maximumWidth.converted(to: .meters).value
             params.append(URLQueryItem(name: CodingKeys.maximumWidth.stringValue, value: String(widthInMeters)))
-        }
-        
-        if let maximumWeight = maximumWeight {
-            let weightInTonnes = maximumWeight.converted(to: .metricTons).value
-            params.append(URLQueryItem(name: CodingKeys.maximumWeight.stringValue, value: String(weightInTonnes)))
         }
 
         if [ProfileIdentifier.automobile, .automobileAvoidingTraffic].contains(profileIdentifier) {
@@ -493,20 +440,9 @@ open class RouteOptions: DirectionsOptions {
             }
         }
         
-        if includesTollPrices {
-            params.append(URLQueryItem(name: CodingKeys.includesTollPrices.stringValue,
-                                       value: includesTollPrices.queryString))
-        }
-        
         return params + super.urlQueryItems
     }
     
-}
-
-extension Bool {
-    var queryString: String {
-        return self ? "true": "false"
-    }
 }
 
 extension LocationSpeed {

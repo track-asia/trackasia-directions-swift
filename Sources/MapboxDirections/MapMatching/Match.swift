@@ -43,7 +43,7 @@ public enum Weight: Equatable {
  Typically, you do not create instances of this class directly. Instead, you receive match objects when you pass a `MatchOptions` object into the `Directions.calculate(_:completionHandler:)` method.
  */
 open class Match: DirectionsResult {
-    private enum CodingKeys: String, CodingKey, CaseIterable {
+    private enum CodingKeys: String, CodingKey {
         case confidence
         case weight
         case weightName = "weight_name"
@@ -82,7 +82,6 @@ open class Match: DirectionsResult {
         weight = Weight(value: weightValue, metric: weightMetric)
         
         try super.init(from: decoder)
-        try decodeForeignMembers(notKeyedBy: CodingKeys.self, with: decoder)
     }
     
     public override func encode(to encoder: Encoder) throws {

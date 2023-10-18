@@ -1,14 +1,13 @@
 # Mapbox Directions for Swift
 
-[![CircleCI](https://circleci.com/gh/trackasia/trackasia-directions-swift.svg?style=svg)](https://circleci.com/gh/trackasia/trackasia-directions-swift)
+[![CircleCI](https://circleci.com/gh/track-asia/trackasia-directions-swift.svg?style=svg)](https://circleci.com/gh/track-asia/trackasia-directions-swift)
 [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
 [![CocoaPods](https://img.shields.io/cocoapods/v/MapboxDirections.svg)](https://cocoapods.org/pods/MapboxDirections/)
 [![SPM compatible](https://img.shields.io/badge/SPM-compatible-4BC51D.svg?style=flat)](https://swift.org/package-manager/)
-[![codecov](https://codecov.io/gh/trackasia/trackasia-directions-swift/branch/main/graph/badge.svg?token=bjr4ASuXuO)](https://codecov.io/gh/trackasia/trackasia-directions-swift)
 
 Mapbox Directions for Swift (formerly MapboxDirections.swift) makes it easy to connect your iOS, macOS, tvOS, watchOS, or Linux application to the [Mapbox Directions](https://docs.mapbox.com/api/navigation/) and [Map Matching](https://docs.mapbox.com/api/navigation/#map-matching) APIs. Quickly get driving, cycling, or walking directions, whether the trip is nonstop or it has multiple stopping points, all using a simple interface reminiscent of MapKit’s `MKDirections` API. Fit a GPX trace to the [OpenStreetMap](https://www.openstreetmap.org/) road network. The Mapbox Directions and Map Matching APIs are powered by the [OSRM](http://project-osrm.org/) and [Valhalla](https://github.com/valhalla/valhalla/) routing engines. For more information, see the [Mapbox Navigation](https://www.mapbox.com/navigation/) homepage.
 
-Mapbox Directions pairs well with [MapboxGeocoder.swift](https://github.com/mapbox/MapboxGeocoder.swift), [MapboxStatic.swift](https://github.com/mapbox/MapboxStatic.swift), the [Mapbox Navigation SDK for iOS](https://github.com/track-asia/trackasia-navigation-ios/), and the [Mapbox Maps SDK for iOS](https://docs.mapbox.com/ios/maps/) or [macOS SDK](https://mapbox.github.io/mapbox-gl-native/macos/).
+Mapbox Directions pairs well with [MapboxGeocoder.swift](https://github.com/mapbox/MapboxGeocoder.swift), [MapboxStatic.swift](https://github.com/mapbox/MapboxStatic.swift), the [Mapbox Navigation SDK for iOS](https://github.com/mapbox/mapbox-navigation-ios/), and the [Mapbox Maps SDK for iOS](https://docs.mapbox.com/ios/maps/) or [macOS SDK](https://mapbox.github.io/mapbox-gl-native/macos/).
 
 ## Getting started
 
@@ -16,27 +15,27 @@ Specify the following dependency in your [Carthage](https://github.com/Carthage/
 
 ```cartfile
 # Latest stable release
-github "trackasia/trackasia-directions-swift" ~> 2.9
+github "track-asia/trackasia-directions-swift" ~> 2.4
 # Latest prerelease
-github "trackasia/trackasia-directions-swift" "v2.11.0-alpha.1"
+github "track-asia/trackasia-directions-swift" "v2.4.0-rc.2"
 ```
 
 Or in your [CocoaPods](http://cocoapods.org/) Podfile:
 
 ```podspec
 # Latest stable release
-pod 'MapboxDirections', '~> 2.9'
+pod 'MapboxDirections', '~> 2.4'
 # Latest prerelease
-pod 'MapboxDirections', :git => 'https://github.com/trackasia/trackasia-directions-swift.git', :tag => 'v2.11.0-alpha.1'
+pod 'MapboxDirections', :git => 'https://github.com/track-asia/trackasia-directions-swift.git', :tag => 'v2.4.0-rc.2'
 ```
 
 Or in your [Swift Package Manager](https://swift.org/package-manager/) Package.swift:
 
 ```swift
 // Latest stable release
-.package(name: "MapboxDirections", url: "https://github.com/trackasia/trackasia-directions-swift.git", from: "2.9.1")
+.package(name: "MapboxDirections", url: "https://github.com/track-asia/trackasia-directions-swift.git", from: "2.4.0")
 // Latest prerelease
-.package(name: "MapboxDirections", url: "https://github.com/trackasia/trackasia-directions-swift.git", .exact("2.11.0-alpha.1"))
+.package(name: "MapboxDirections", url: "https://github.com/track-asia/trackasia-directions-swift.git", .exact("2.4.0-rc.2"))
 ```
 
 Then `import MapboxDirections`.
@@ -46,15 +45,15 @@ This repository contains an example application that demonstrates how to use the
 ## System requirements
 
 * One of the following package managers:
-   * CocoaPods 1.10 or above
+   * CocoaPods (CocoaPods 1.10 or above if using Xcode 12)
    * Carthage 0.38 or above
-   * Swift Package Manager 5.5 or above
-* Xcode 13 or above
+   * Swift Package Manager 5.3 or above
+* Xcode 12 or above
 * One of the following operating systems:
-   * iOS 12.0 or above
-   * macOS 10.14 or above
-   * tvOS 12.0 or above
-   * watchOS 5.0 or above
+   * iOS 10.0 or above
+   * macOS 10.12.0 or above
+   * tvOS 10.0 or above
+   * watchOS 3.0 or above
    * Any Linux distribution supported by Swift
 
 v0.30.0 is the last release of MapboxDirections.swift that supports a minimum deployment target of iOS 9._x_, macOS 10.11._x_, tvOS 9._x_, or watchOS 2._x_. v0.30.0 is also the last release that is compatible with Objective-C or AppleScript code.
@@ -65,7 +64,7 @@ v0.30.0 is the last release of MapboxDirections.swift that supports a minimum de
 
 You’ll need a [Mapbox access token](https://docs.mapbox.com/api/#access-tokens-and-token-scopes) in order to use the API. If you’re already using the [Mapbox Maps SDK for iOS](https://docs.mapbox.com/ios/maps/) or [macOS SDK](https://mapbox.github.io/mapbox-gl-native/macos/), Mapbox Directions automatically recognizes your access token, as long as you’ve placed it in the `MBXAccessToken` key of your application’s Info.plist file.
 
-The examples below are each provided in Swift (denoted with `main.swift`). For further details, see the documentation available by the link in the [releases](https://github.com/trackasia/trackasia-directions-swift/releases).
+The examples below are each provided in Swift (denoted with `main.swift`). For further details, see the documentation available by the link in the [releases](https://github.com/track-asia/trackasia-directions-swift/releases).
 
 ### Calculating directions between locations
 
@@ -198,26 +197,7 @@ isochrones.calculate(isochroneOptions) { session, result in
     }
 }
 ```
-
-### Retrieve a distance or duration matrix
-
-See the travel times or distances between many points using the Matrix API. `Matrix` uses the same access token initialization as `Directions`. Once that is configured, you need to fill  `MatrixOptions` parameters to calculate the desired matrix:
-
-``` swift
-let matrix = Matrix(credentials: Credentials(accessToken: "<#your access token#>")
-let waypoints = [
-    Waypoint(coordinate: CLLocationCoordinate2D(latitude: 37.751668, longitude: -122.418408), name: "Mission Street"),
-    Waypoint(coordinate: CLLocationCoordinate2D(latitude: 37.755184, longitude: -122.422959), name: "22nd Street"),
-    Waypoint(coordinate: CLLocationCoordinate2D(latitude: 37.759695, longitude: -122.426911))
-]
-let matrixOptions = MatrixOptions(sources: waypoints, destinations: waypoints, profileIdentifier: .automobile)
-matrix.calculate(matrixOptions) { session, result in
-    if case .success(let response) = result,
-       let expectedTravelTime = response.travelTime(from: 0, to: 1) {
-        print("Expected route duration from '\(waypoints[0].name)' to '\(waypoints[1].name)' is \(expectedTravelTime / 60) minutes.")
-    }
-}
-```
+...
 
 ## Usage with other Mapbox libraries
 
@@ -243,7 +223,7 @@ if var routeCoordinates = route.shape?.coordinates, routeCoordinates.count > 0 {
 
 ### Displaying a turn-by-turn navigation interface
 
-The [Mapbox Navigation SDK for iOS](https://github.com/track-asia/trackasia-navigation-ios/) provides a full-fledged user interface for turn-by-turn navigation along routes supplied by MapboxDirections.
+The [Mapbox Navigation SDK for iOS](https://github.com/mapbox/mapbox-navigation-ios/) provides a full-fledged user interface for turn-by-turn navigation along routes supplied by MapboxDirections.
 
 ### Drawing Isochrones contours on a map snapshot
 

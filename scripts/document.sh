@@ -36,7 +36,7 @@ bundle exec jazzy \
     --config docs/jazzy.yml \
     --sdk iphonesimulator \
     --module-version ${SHORT_VERSION} \
-    --github-file-prefix "https://github.com/trackasia/trackasia-directions-swift/tree/${BRANCH}" \
+    --github-file-prefix "https://github.com/track-asia/trackasia-directions-swift/tree/${BRANCH}" \
     --readme ${README} \
     --documentation="docs/guides/*.md" \
     --root-url "${BASE_URL}/directions/api/${RELEASE_VERSION}/" \
