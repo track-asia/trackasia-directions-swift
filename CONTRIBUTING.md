@@ -86,4 +86,4 @@ To release a new version of the MapboxDirections package:
 1. Wait about 10 minutes for new documentation to go live. (Mapbox employees can check the #publisher channel in Slack for a notification of when the commit has been published.)
 1. _(Mapbox employees only.)_ [Update various links](https://github.com/mapbox/ios-sdk#mapboxdirectionsswift) to the current docset in the [iOS documentation] site.
 1. _(Mapbox employees only.)_ [Update various links](https://github.com/mapbox/help/blob/publisher-production/docs/upgrading-versions.md) to the current docset in the [help](https://docs.mapbox.com/help/) site.
-1. For a new major version, upgrade the [iOS navigation SDK](https://github.com/mapbox/mapbox-navigation-ios/)’s Cartfile, podspecs, and Package.swift to the new version. 
+1. For a new major version, upgrade the [iOS navigation SDK](https://github.com/track-asia/trackasia-navigation-ios/)’s Cartfile, podspecs, and Package.swift to the new version. 

@@ -150,7 +150,7 @@
 			);
 			mainGroup = E28CE39F285B901B00262066;
 			packageReferences = (
-				7E6230DF2978F253009577FE /* XCRemoteSwiftPackageReference "mapbox-navigation-ios" */,
+				7E6230DF2978F253009577FE /* XCRemoteSwiftPackageReference "trackasia-navigation-ios" */,
 			);
 			productRefGroup = E28CE3A9285B901B00262066 /* Products */;
 			projectDirPath = "";
@@ -411,9 +411,9 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		7E6230DF2978F253009577FE /* XCRemoteSwiftPackageReference "mapbox-navigation-ios" */ = {
+		7E6230DF2978F253009577FE /* XCRemoteSwiftPackageReference "trackasia-navigation-ios" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/mapbox/mapbox-navigation-ios";
+			repositoryURL = "https://github.com/track-asia/trackasia-navigation-ios";
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 2.0.0;
@@ -424,7 +424,7 @@
 /* Begin XCSwiftPackageProductDependency section */
 		7E6230E02978F253009577FE /* MapboxNavigation */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 7E6230DF2978F253009577FE /* XCRemoteSwiftPackageReference "mapbox-navigation-ios" */;
+			package = 7E6230DF2978F253009577FE /* XCRemoteSwiftPackageReference "trackasia-navigation-ios" */;
 			productName = MapboxNavigation;
 		};
 		E2B5006E285C60F8002BAE73 /* MapboxNavigation */ = {
