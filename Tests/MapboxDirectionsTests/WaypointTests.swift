@@ -25,6 +25,7 @@ class WaypointTests: XCTestCase {
             XCTAssertTrue(waypoint.allowsArrivingOnOppositeSide)
             XCTAssertTrue(waypoint.separatesLegs)
             XCTAssertEqual(waypoint.snappedDistance, 7.0)
+            XCTAssertNil(waypoint.layer)
         }
         
         waypoint = Waypoint(coordinate: LocationCoordinate2D(latitude: 38.8977, longitude: -77.0365), coordinateAccuracy: 5, name: "White House")
@@ -33,6 +34,7 @@ class WaypointTests: XCTestCase {
         waypoint?.headingAccuracy = 10
         waypoint?.allowsArrivingOnOppositeSide = false
         waypoint?.snappedDistance = 7
+        waypoint?.layer = -1
         
         let encoder = JSONEncoder()
         var encodedData: Data?
@@ -55,6 +57,8 @@ class WaypointTests: XCTestCase {
             encodedWaypointJSON?.removeValue(forKey: "heading")
             XCTAssertEqual(encodedWaypointJSON?["separatesLegs"] as? Bool, waypoint?.separatesLegs)
             encodedWaypointJSON?.removeValue(forKey: "separatesLegs")
+            XCTAssertEqual(encodedWaypointJSON?["layer"] as? Int, waypoint?.layer)
+            encodedWaypointJSON?.removeValue(forKey: "layer")
            
             let targetCoordinateJSON = encodedWaypointJSON?["targetCoordinate"] as? [LocationDegrees]
             XCTAssertNotNil(targetCoordinateJSON)
@@ -158,13 +162,30 @@ class WaypointTests: XCTestCase {
         let from = Waypoint(coordinate: LocationCoordinate2D(latitude: 0, longitude: 0))
         let to = Waypoint(coordinate: LocationCoordinate2D(latitude: 0, longitude: 0))
         let through = Waypoint(coordinate: LocationCoordinate2D(latitude: 0, longitude: 0))
-        
+
         let routeOptions = RouteOptions(waypoints: [from, through, to])
         let matchOptions = MatchOptions(waypoints: [from, through, to], profileIdentifier: nil)
-        
+
         through.allowsSnappingToClosedRoad = true
-        
+        through.allowsSnappingToStaticallyClosedRoad = true
+
         XCTAssertEqual(routeOptions.urlQueryItems.first { $0.name == "snapping_include_closures" }?.value, ";true;")
         XCTAssertEqual(matchOptions.urlQueryItems.first { $0.name == "snapping_include_closures" }?.value, ";true;")
+        XCTAssertEqual(routeOptions.urlQueryItems.first { $0.name == "snapping_include_static_closures" }?.value, ";true;")
+        XCTAssertEqual(matchOptions.urlQueryItems.first { $0.name == "snapping_include_static_closures" }?.value, ";true;")
+    }
+
+    func testClosedRoadSnappingNotSet() {
+        let from = Waypoint(coordinate: LocationCoordinate2D(latitude: 0, longitude: 0))
+        let to = Waypoint(coordinate: LocationCoordinate2D(latitude: 0, longitude: 0))
+        let through = Waypoint(coordinate: LocationCoordinate2D(latitude: 0, longitude: 0))
+
+        let routeOptions = RouteOptions(waypoints: [from, through, to])
+        let matchOptions = MatchOptions(waypoints: [from, through, to], profileIdentifier: nil)
+
+        XCTAssertEqual(routeOptions.urlQueryItems.first { $0.name == "snapping_include_closures" }?.value, nil)
+        XCTAssertEqual(matchOptions.urlQueryItems.first { $0.name == "snapping_include_closures" }?.value, nil)
+        XCTAssertEqual(routeOptions.urlQueryItems.first { $0.name == "snapping_include_static_closures" }?.value, nil)
+        XCTAssertEqual(matchOptions.urlQueryItems.first { $0.name == "snapping_include_static_closures" }?.value, nil)
     }
 }

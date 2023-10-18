@@ -22,6 +22,8 @@ class RouteOptionsTests: XCTestCase {
         XCTAssertEqual(unarchivedWaypoints[1].coordinate.longitude, coordinates[1].longitude)
         XCTAssertEqual(unarchivedWaypoints[2].coordinate.latitude, coordinates[2].latitude)
         XCTAssertEqual(unarchivedWaypoints[2].coordinate.longitude, coordinates[2].longitude)
+        XCTAssertEqual(unarchivedWaypoints[0].layer, -1)
+        XCTAssertEqual(unarchivedWaypoints[2].layer, 3)
         
         XCTAssertEqual(unarchivedOptions.profileIdentifier, options.profileIdentifier)
         XCTAssertEqual(unarchivedOptions.locale, options.locale)
@@ -36,6 +38,7 @@ class RouteOptionsTests: XCTestCase {
         XCTAssertEqual(unarchivedOptions.alleyPriority, options.alleyPriority)
         XCTAssertEqual(unarchivedOptions.walkwayPriority, options.walkwayPriority)
         XCTAssertEqual(unarchivedOptions.speed, options.speed)
+        XCTAssertEqual(unarchivedOptions.includesTollPrices, options.includesTollPrices)
     }
     
     func testCodingWithRawCodingKeys() {
@@ -63,9 +66,11 @@ class RouteOptionsTests: XCTestCase {
             "enable_refresh": false,
             "avoid_maneuver_radius": 300,
             "max_width": 2.3,
+            "max_weight": 3.5,
             "max_height": 3,
             "alley_bias": DirectionsPriority.low.rawValue,
             "walkway_bias": DirectionsPriority.high.rawValue,
+            "compute_toll_cost": true
         ]
         
         let routeOptionsData = try! JSONSerialization.data(withJSONObject: routeOptionsJSON, options: [])
@@ -90,6 +95,8 @@ class RouteOptionsTests: XCTestCase {
         XCTAssertEqual(routeOptions.initialManeuverAvoidanceRadius, 300)
         XCTAssertEqual(routeOptions.maximumWidth, Measurement(value: 2.3, unit: .meters))
         XCTAssertEqual(routeOptions.maximumHeight, Measurement(value: 3, unit: .meters))
+        XCTAssertEqual(routeOptions.maximumWeight, Measurement(value: 3.5, unit: .metricTons))
+        XCTAssertEqual(routeOptions.includesTollPrices, true)
         
         let encodedRouteOptions: Data = try! JSONEncoder().encode(routeOptions)
         let optionsString: String = String(data: encodedRouteOptions, encoding: .utf8)!
@@ -115,9 +122,10 @@ class RouteOptionsTests: XCTestCase {
         XCTAssertEqual(unarchivedOptions.initialManeuverAvoidanceRadius, routeOptions.initialManeuverAvoidanceRadius)
         XCTAssertEqual(unarchivedOptions.maximumWidth, routeOptions.maximumWidth)
         XCTAssertEqual(unarchivedOptions.maximumHeight, routeOptions.maximumHeight)
+        XCTAssertEqual(unarchivedOptions.includesTollPrices, routeOptions.includesTollPrices)
     }
     
-    func testURLCoding() {
+    func testURLCoding() throws {
         
         let originalOptions = testRouteOptions
         originalOptions.includesAlternativeRoutes = true
@@ -135,6 +143,7 @@ class RouteOptionsTests: XCTestCase {
                 $0.element.targetCoordinate = $0.element.coordinate
             }
             $0.element.allowsSnappingToClosedRoad = $0.offset == 1
+            $0.element.allowsSnappingToStaticallyClosedRoad = $0.offset == 1
         }
         
         let url = Directions(credentials: BogusCredentials).url(forCalculating: originalOptions)
@@ -155,6 +164,7 @@ class RouteOptionsTests: XCTestCase {
         
         zip(decodedWaypoints, originalOptions.waypoints).forEach {
             XCTAssertEqual($0.0.allowsSnappingToClosedRoad, $0.1.allowsSnappingToClosedRoad)
+            XCTAssertEqual($0.0.allowsSnappingToStaticallyClosedRoad, $0.1.allowsSnappingToStaticallyClosedRoad)
             XCTAssertEqual($0.0.allowsArrivingOnOppositeSide, $0.1.allowsArrivingOnOppositeSide)
             XCTAssertEqual($0.0.targetCoordinate, $0.1.targetCoordinate)
             XCTAssertEqual($0.0.separatesLegs, $0.1.separatesLegs)
@@ -184,9 +194,14 @@ class RouteOptionsTests: XCTestCase {
         XCTAssertEqual(decodedOptions.alleyPriority, originalOptions.alleyPriority)
         XCTAssertEqual(decodedOptions.walkwayPriority, originalOptions.walkwayPriority)
         XCTAssertEqual(decodedOptions.speed, originalOptions.speed)
+        XCTAssertEqual(decodedOptions.includesTollPrices, originalOptions.includesTollPrices)
         XCTAssertNil(decodedOptions.arriveBy)
         // URL encoding skips seconds, so we check that dates are within 1 minute delta
         XCTAssertTrue(abs(decodedOptions.departAt!.timeIntervalSince(originalOptions.departAt!)) < 60)
+        
+        let routeURL = try XCTUnwrap(URL(string: "https://api.mapbox.com/router/v1/mapbox/driving-traffic/-121.913565,37.331832;-121.916282,37.328707.json"))
+        XCTAssertNotNil(RouteOptions(url: routeURL))
+        XCTAssertNil(MatchOptions(url: routeURL))
     }
     
     // MARK: API name-handling tests
@@ -228,13 +243,13 @@ class RouteOptionsTests: XCTestCase {
     }
     
     func testResponseWithoutDestinationName() {
-        // https://api.mapbox.com/route/v1/mapbox/driving/-84.411389,39.27665;-84.412115,39.272675?overview=false&steps=false&access_token=pk.feedcafedeadbeef
+        // https://api.mapbox.com/router/v1/mapbox/driving/-84.411389,39.27665;-84.412115,39.272675?overview=false&steps=false&access_token=pk.feedcafedeadbeef
         let response = self.response(for: "noDestinationName")!
         XCTAssertNil(response.route.legs.last?.destination?.name, "Empty-string waypoint name in API responds should be represented as nil.")
     }
     
     func testResponseWithDestinationName() {
-        // https://api.mapbox.com/route/v1/mapbox/driving/-84.411389,39.27665;-84.41195,39.27260?overview=false&steps=false&access_token=pk.feedcafedeadbeef
+        // https://api.mapbox.com/router/v1/mapbox/driving/-84.411389,39.27665;-84.41195,39.27260?overview=false&steps=false&access_token=pk.feedcafedeadbeef
         let response = self.response(for: "apiDestinationName")!
         XCTAssertEqual(response.route.legs.last?.destination?.name, "Reading Road", "Waypoint name in fixture response not parsed correctly.")
     }
@@ -298,8 +313,18 @@ class RouteOptionsTests: XCTestCase {
         XCTAssertTrue(options.urlQueryItems.contains(URLQueryItem(name: "waypoint_targets", value: ";-84.51619,39.13115")))
     }
     
+    func testWaypointLayers(){
+        let from = Waypoint(coordinate: LocationCoordinate2D(latitude: 0, longitude: 0))
+        let through = Waypoint(coordinate: LocationCoordinate2D(latitude: 0, longitude: 0))
+        let to = Waypoint(coordinate: LocationCoordinate2D(latitude: 0, longitude: 0))
+        from.layer = -1
+        to.layer = 3
+        let options = RouteOptions(waypoints: [from, through, to])
+        XCTAssertTrue(options.urlQueryItems.contains(URLQueryItem(name: "layers", value: "-1;;3")))
+    }
+    
     func testInitialManeuverAvoidanceRadiusSerialization() {
-        let options = RouteOptions(coordinates: [])
+        let options = RouteOptions(coordinates: testCoordinates)
         
         options.initialManeuverAvoidanceRadius = 123.456
         
@@ -311,7 +336,7 @@ class RouteOptionsTests: XCTestCase {
     }
 
     func testMaximumWidthAndMaximimHeightSerialization() {
-        let options = RouteOptions(coordinates: [])
+        let options = RouteOptions(coordinates: testCoordinates)
         let widthValue = 2.3
         let heightValue = 2.0
         options.maximumWidth = Measurement(value: widthValue, unit: .meters)
@@ -319,17 +344,53 @@ class RouteOptionsTests: XCTestCase {
         XCTAssertTrue(options.urlQueryItems.contains(URLQueryItem(name: "max_width", value: String(widthValue))))
         XCTAssertTrue(options.urlQueryItems.contains(URLQueryItem(name: "max_height", value: String(heightValue))))
     }
+    
+    func testMaximumWeightSerialization() {
+        let options = RouteOptions(coordinates: [])
+        let weightValue = 13.3
+        options.maximumWeight = Measurement(value: weightValue, unit: .metricTons)
+        XCTAssertTrue(options.urlQueryItems.contains(URLQueryItem(name: "max_weight", value: String(weightValue))))
+    }
 
     func testExcludeAndIncludeRoadClasses() {
-        let options = RouteOptions(coordinates: [])
+        let options = RouteOptions(coordinates: testCoordinates)
         options.roadClassesToAvoid = [.toll, .motorway, .ferry, .unpaved, .cashTollOnly]
         options.roadClassesToAllow = [.highOccupancyVehicle2, .highOccupancyVehicle3, .highOccupancyToll]
 
-        let expectedExcludeQueryItem = URLQueryItem(name: "exclude", value: "toll,motorway,ferry,unpaved,cash_only_toll")
+        let expectedExcludeQueryItem = URLQueryItem(name: "exclude", value: "toll,motorway,ferry,unpaved,cash_only_tolls")
         XCTAssertTrue(options.urlQueryItems.contains(expectedExcludeQueryItem))
 
         let expectedIncludeQueryItem = URLQueryItem(name: "include", value: "hov2,hov3,hot")
         XCTAssertTrue(options.urlQueryItems.contains(expectedIncludeQueryItem))
+    }
+
+    func testReturnPathIfNoWaypointsAndOneWaypoint() {
+        let noWaypointOptions = RouteOptions(coordinates: [])
+        XCTAssertEqual(noWaypointOptions.path, noWaypointOptions.abridgedPath)
+
+        let oneWaypointOptions = RouteOptions(coordinates: [LocationCoordinate2D(latitude: 0.0, longitude: 0.0)])
+        XCTAssertEqual(oneWaypointOptions.path, oneWaypointOptions.abridgedPath)
+
+        let waypoints = [
+            Waypoint(coordinate: LocationCoordinate2D(latitude: 0.0, longitude: 0.0), name: "name")
+        ]
+        let oneWaypointOptionsWithNonNilName = RouteOptions(waypoints: waypoints)
+        XCTAssertEqual(oneWaypointOptionsWithNonNilName.path, oneWaypointOptionsWithNonNilName.abridgedPath)
+    }
+
+    func testReturnUrlQueryWaypoinNameItemsIfNoWaypointsAndOneWaypoint() {
+        let noWaypointOptions = RouteOptions(coordinates: [])
+        XCTAssertFalse(noWaypointOptions.urlQueryItems.map { $0.name }.contains("waypoint_names"))
+
+        let oneWaypointOptionsWithNilName = RouteOptions(coordinates: [LocationCoordinate2D(latitude: 0.0, longitude: 0.0)])
+        XCTAssertFalse(oneWaypointOptionsWithNilName.urlQueryItems.map { $0.name }.contains("waypoint_names"))
+
+        let waypoints = [
+            Waypoint(coordinate: LocationCoordinate2D(latitude: 0.0, longitude: 0.0), name: "name")
+        ]
+
+        let oneWaypointOptionsWithNonNilName = RouteOptions(waypoints: waypoints)
+        XCTAssertFalse(oneWaypointOptionsWithNonNilName.urlQueryItems.map { $0.name }.contains("waypoint_names"))
     }
 }
 
@@ -340,7 +401,11 @@ fileprivate let testCoordinates = [
 ]
 
 var testRouteOptions: RouteOptions {
-    let opts = RouteOptions(coordinates: testCoordinates, profileIdentifier: .automobileAvoidingTraffic)
+    let waypoints = testCoordinates.map { Waypoint(coordinate: $0)}
+    waypoints[0].layer = -1
+    waypoints[2].layer = 3
+    
+    let opts = RouteOptions(waypoints: waypoints, profileIdentifier: .automobileAvoidingTraffic)
     opts.locale = Locale(identifier: "en_US")
     opts.allowsUTurnAtWaypoint = true
     opts.shapeFormat = .polyline
@@ -360,6 +425,7 @@ var testRouteOptions: RouteOptions {
     opts.speed = 1
     opts.departAt = Date(timeIntervalSince1970: 500)
     opts.arriveBy = Date(timeIntervalSince1970: 600)
+    opts.includesTollPrices = true
 
     return opts
 }

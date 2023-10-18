@@ -1,5 +1,80 @@
 # Changes to Mapbox Directions for Swift
 
+## v2.11.0
+
+* Added `Incident.trafficCodes` and corresponding `TrafficCodes` struct to hold jartic codes. ([#808](https://github.com/track-asia/trackasia-directions-swift/pull/808))
+
+## v2.10.0
+
+* Added `Matrix` API wrapper. The [Mapbox Matrix API](https://docs.mapbox.com/api/navigation/matrix/) computes travel times between many points, and returns a matrix of all travel times between the locations. [#626](https://github.com/track-asia/trackasia-directions-swift/pull/626)
+* Fixed a crash that could occur if only one `Waypoint` with a nonnull `name` was used in the Directions request. [#797](https://github.com/track-asia/trackasia-directions-swift/pull/797)
+* Added `Interchange` and `Junction` structs describing IC and JCT. [#799](https://github.com/track-asia/trackasia-directions-swift/pull/799)
+* Fixed an issue where using `cashTollOnly` for road class exclusions failed the directions request. ([#801](https://github.com/track-asia/trackasia-directions-swift/pull/801))
+
+## v2.9.0
+
+* Added the `RestStop.amenities` property that describes useful and important facilities such as gas stations, restaurants, and ATMs. ([#780](https://github.com/track-asia/trackasia-directions-swift/pull/780))
+
+## v2.8.0
+
+### Packaging
+
+* This library now requires a minimum deployment target of iOS 12.0 or above, macOS 10.14.0 or above, tvOS 12.0 or above, or watchOS 5.0 or above. Older operating system versions are no longer supported. ([#736](https://github.com/track-asia/trackasia-directions-swift/pull/736))
+
+### Other changes
+
+* Added the `Waypoint.layer` property, which can ensure that the route begins on the correct road if it is above or below another road. ([#745](https://github.com/track-asia/trackasia-directions-swift/pull/745))
+* Added the `AttributeOptions.update(customOption:comparisonPolicy:)` method and `AttributeOptions.customOptionsByRawValue` property for specifying attribute options that are still marked as beta in the Mapbox Directions API. ([#748](https://github.com/track-asia/trackasia-directions-swift/pull/748))
+* Fixed stale `Incident.shapeIndexRange` values even after calling the `RouteRefreshResponse.refreshLegIncidents(from:legIndex:legShapeIndex:)` method. ([#752](https://github.com/track-asia/trackasia-directions-swift/pull/752))
+* Added the `RouteLeg.closures` property containing information about road closures based on live traffic conditions. This information requires adding `AttributeOptions.closures` to the `RouteOptions.attributeOptions` property and setting the `DirectionsOptions.profileIdentifier` property to `ProfileIdentifier.automobileAvoidingTraffic`. ([#755](https://github.com/track-asia/trackasia-directions-swift/pull/755))
+* Added the `Route.refresh(from:refreshParameters:)` method as a single entry point for refreshing various parameters of the `Route` object. ([#755](https://github.com/track-asia/trackasia-directions-swift/pull/755))
+
+## v2.7.1
+
+### Packaging
+
+* This release of MapboxDirections requires Turf v2.5._x_ to work around a dependency resolution failure. If you use Carthage, it requires Turf v2.5.0 exactly. ([#766](https://github.com/track-asia/trackasia-directions-swift/pull/766))
+
+## v2.7.0
+
+### Packaging
+
+* Xcode 13.0 or above and Swift 5.5 or above are now required to build MapboxDirections from source. ([#725](https://github.com/track-asia/trackasia-directions-swift/pull/725), [#727](https://github.com/track-asia/trackasia-directions-swift/pull/727))
+
+### Command line tool
+
+* Removed the `--config` option. Instead, pass in either the path to a JSON configuration file or the full URL to a Mapbox Directions API or Mapbox Map Matching API request. ([#726](https://github.com/track-asia/trackasia-directions-swift/pull/726))
+* When the `MAPBOX_ACCESS_TOKEN` environment variable is unset, the tool exits with an error code instead of crashing. ([#728](https://github.com/track-asia/trackasia-directions-swift/pull/728))
+* The tool now connects to the API endpoint in the `MAPBOX_HOST` environment variable, if specified. ([#728](https://github.com/track-asia/trackasia-directions-swift/pull/728))
+
+### Other changes
+
+* Added `Waypoint.allowsSnappingToStaticallyClosedRoad` property to allow snapping the waypoint’s location to a statically (long-term) closed part of a road. ([#721](https://github.com/track-asia/trackasia-directions-swift/pull/721))
+* `RouteOptions(url:)` now returns `nil` if given a Mapbox Map Matching API request URL, and `MatchOptions(url:)` returns `nil` if given a Mapbox Directions API request URL. ([#728](https://github.com/track-asia/trackasia-directions-swift/pull/728))
+* Added the `Directions.refreshRoute(responseIdentifier:routeIndex:fromLegAtIndex:currentRouteShapeIndex:completionHandler:)` method, which takes the index into the route geometry at which to begin refreshing, as well as corresponding `Directions.urlRequest(forRefreshing responseIdentifier:routeIndex:fromLegAtIndex:currentRouteShapeIndex:)`, `RouteRefreshResponse.refreshLegAttributes(from:legIndex:legShapeIndex:)`, and `RouteRefreshResponse.refreshLegIncidents(from:legIndex:legShapeIndex:)` methods. ([#733](https://github.com/track-asia/trackasia-directions-swift/pull/733/files))
+
+## v2.6.1
+
+### Packaging
+
+* This release of MapboxDirections requires Turf v2.5._x_ to work around a dependency resolution failure. If you use Carthage, it requires Turf v2.5.0 exactly. ([#771](https://github.com/track-asia/trackasia-directions-swift/pull/771))
+
+## v2.6.0
+
+* MapboxDirections now requires [Turf v2.4](https://github.com/mapbox/turf-swift/releases/tag/v2.4.0). ([#703](https://github.com/track-asia/trackasia-directions-swift/pull/703))
+* Added the `RouteOptions.maximumWeight` property to compute routes that excludes roads with a lower weight limit. ([#694](https://github.com/track-asia/trackasia-directions-swift/pull/694))
+* Added `Route.refreshLegIncidents(from:)` method to allow refreshing `RouteLeg.incidents` during a route refresh. ([#704](https://github.com/track-asia/trackasia-directions-swift/pull/704))
+* Added the `Intersection.railroadCrossing`, `Intersection.trafficSignal`, `Intersection.stopSign` and `Intersection.yieldSign` properties to indicate the kind of traffic control devices at an intersection along the route. ([#706](https://github.com/track-asia/trackasia-directions-swift/pull/706))
+
+## v2.5.0
+
+* Added the `RestStop.name` property. ([#689](https://github.com/track-asia/trackasia-directions-swift/pull/689))
+* Added the `TollCollection.name` property. ([#691](https://github.com/track-asia/trackasia-directions-swift/pull/691))
+* Types that correspond to objects in the Mapbox Directions API response, such as `RouteResponse`, `RouteRefreshResponse`, `MatchResponse`, and `RouteStep`, now conform to the `ForeignMemberContainer` and `ForeignMemberClassContainer` protocols. Types that conform to these protocols can persist unrecognized properties in the response, such as properties that are in beta, even after coding and decoding. You can access these properties using the `ForeignMemberContainer.foreignMembers` and `ForeignMemberClassContainer.foreignMembers` properties. ([#669](https://github.com/track-asia/trackasia-directions-swift/pull/669))
+* Fixed an issue where `RouteStep.distance`, `RouteStep.expectedTravelTime` and `RouteStep.typicalTravelTime` were rounded to one decimal place when being encoded. ([#697](https://github.com/track-asia/trackasia-directions-swift/pull/697))
+* Fixed an issue where decoding a `RouteResponse` incorrectly set the `Waypoint.snappedDistance` property to `nil`. ([#669](https://github.com/track-asia/trackasia-directions-swift/pull/669))
+* The `mapbox-directions-swift` command line tool now requests routes from the Mapbox Directions API if no input file is specified. ([#576](https://github.com/track-asia/trackasia-directions-swift/pull/576))
+
 ## v2.4.0
 
 * Fixed a crash that occurred when `RouteOptions.roadClassesToAvoid` or `RouteOptions.roadClassesToAllow` properties contained multiple road classes.
@@ -15,7 +90,6 @@
 * Added a `RouteLeg.viaWaypoints` property that lists the non-leg-separating waypoints (also known as “silent waypoints”) along a `RouteLeg`. Previously, you had to filter `DirectionsOptions.waypoints` to include only the items whose `Waypoints.separatesLegs` property was set to `true`, then zip them with `RouteResponse.routes`. This approach still works in some cases but is not guaranteed to be reliable for all Mapbox Directions API responses in the future. ([#656](https://github.com/track-asia/trackasia-directions-swift/pull/656))
 
 ## v2.2.0
-
 * Added the `RouteResponse.roadClassViolations` property, which indicates any requested `RouteOptions.roadClassesToAvoid` values that could not be satisfied when calculating the routes. You can use convenience `RouteResponse.exclusionViolations(routeIndex:legIndex:stepIndex:intersectionIndex:)` method to search for a specific item. ([#627](https://github.com/track-asia/trackasia-directions-swift/pull/627))
 * Fixed an issue where `PolyLineString` encoded an invalid GeoJSON LineString. ([#638](https://github.com/track-asia/trackasia-directions-swift/pull/638))
 * Added `RouteRefreshSource` protocol to allow refreshing `Route` objects with `RefreshedRoute` or another `Route` instance. ([#634](https://github.com/track-asia/trackasia-directions-swift/pull/634))
@@ -41,7 +115,7 @@
 * Carthage v0.38 or above is now required for installing this SDK if you use Carthage. ([#548](https://github.com/track-asia/trackasia-directions-swift/pull/548))
 * Xcode 12.0 or above is now required to build MapboxDirections from source. ([#548](https://github.com/track-asia/trackasia-directions-swift/pull/548))
 * You can fully build this SDK on Macs with Apple Silicon. ([#548](https://github.com/track-asia/trackasia-directions-swift/pull/548))
-* The `trackasia-directions-swift` command line tool can no longer be built using Carthage. It now requires [swift-argument-parser](https://github.com/apple/swift-argument-parser) v1.0.0 or above. ([#606](https://github.com/track-asia/trackasia-directions-swift/pull/606))
+* The `mapbox-directions-swift` command line tool can no longer be built using Carthage. It now requires [swift-argument-parser](https://github.com/apple/swift-argument-parser) v1.0.0 or above. ([#606](https://github.com/track-asia/trackasia-directions-swift/pull/606))
 
 ### Other changes
 
@@ -404,7 +478,7 @@ This release includes the ability to make a [Mapbox Map Matching request](https:
 
 ## v0.6.0
 
-This is a complete rewrite of trackasia-directions-swift that focuses on making the API more Swift-like in Swift but also adds Objective-C support ([#47](https://github.com/track-asia/trackasia-directions-swift/pull/47)). The goal is no longer to be a drop-in replacement for MapKit’s MKDirections API, but the library continues to use terminology familiar to Cocoa and Cocoa Touch developers. This version includes a number of breaking changes:
+This is a complete rewrite of mapbox-directions-swift that focuses on making the API more Swift-like in Swift but also adds Objective-C support ([#47](https://github.com/track-asia/trackasia-directions-swift/pull/47)). The goal is no longer to be a drop-in replacement for MapKit’s MKDirections API, but the library continues to use terminology familiar to Cocoa and Cocoa Touch developers. This version includes a number of breaking changes:
 
 * Most types and methods can now be used in Objective-C.
 * Removed the `MB` class prefix from Swift but kept it for Objective-C. If any type conflicts with a type in your application’s module, prefix it with `MapboxDirections.`.

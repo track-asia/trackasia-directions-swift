@@ -5,12 +5,12 @@ import Turf
 
 class RouteTests: XCTestCase {
     func testCoding() {
-        // https://api.mapbox.com/route/v1/mapbox/driving-traffic/-105.08198579860195%2C39.73843005470756;-104.954255,39.662569?overview=false&access_token=…
+        // https://api.mapbox.com/router/v1/mapbox/driving-traffic/-105.08198579860195%2C39.73843005470756;-104.954255,39.662569?overview=false&access_token=…
         let routeJSON: [String: Any?] = [
             "legs": [
                 [
                     "summary": "West 6th Avenue Freeway, South University Boulevard",
-                    "weight": 1346.3,
+                    "weight": 2346.3,
                     "duration": 1083.4,
                     "duration_typical": 1483.262,
                     "steps": [],
@@ -22,6 +22,31 @@ class RouteTests: XCTestCase {
             "duration": 1083.4,
             "duration_typical": 1483.262,
             "distance": 17036.8,
+            "toll_costs": [
+               [
+                    "currency": "JPY",
+                    "payment_methods": [
+                        "etc": [
+                            "standard": 1200,
+                            "middle": 1400
+                        ],
+                        "cash": [
+                            "standard": 1250
+                        ]
+                    ]
+               ],
+               [
+                    "currency": "USD",
+                    "payment_methods": [
+                        "etc": [
+                            "standard": 120,
+                        ],
+                        "cash": [
+                            "standard": 125
+                        ]
+                    ]
+               ],
+            ]
         ]
         let routeData = try! JSONSerialization.data(withJSONObject: routeJSON, options: [])
         
@@ -40,7 +65,31 @@ class RouteTests: XCTestCase {
         let expectedLeg = RouteLeg(steps: [], name: "West 6th Avenue Freeway, South University Boulevard", distance: 17036.8, expectedTravelTime: 1083.4, typicalTravelTime: 1483.262, profileIdentifier: .automobileAvoidingTraffic)
         expectedLeg.source = options.waypoints[0]
         expectedLeg.destination = options.waypoints[1]
+        let expectedTollPrices = [
+            TollPrice(currencyCode: "JPY",
+                      paymentMethod: .electronicTollCollection,
+                      category: .standard,
+                      amount: 1200),
+            TollPrice(currencyCode: "JPY",
+                      paymentMethod: .electronicTollCollection,
+                      category: .middle,
+                      amount: 1400),
+            TollPrice(currencyCode: "JPY",
+                      paymentMethod: .cash,
+                      category: .standard,
+                      amount: 1250),
+            TollPrice(currencyCode: "USD",
+                      paymentMethod: .electronicTollCollection,
+                      category: .standard,
+                      amount: 120),
+            TollPrice(currencyCode: "USD",
+                      paymentMethod: .cash,
+                      category: .standard,
+                      amount: 125),
+        ]
         let expectedRoute = Route(legs: [expectedLeg], shape: nil, distance: 17036.8, expectedTravelTime: 1083.4, typicalTravelTime: 1483.262)
+        expectedRoute.tollPrices = expectedTollPrices
+        
         XCTAssertEqual(route, expectedRoute)
         
         if let route = route {
@@ -65,16 +114,8 @@ class RouteTests: XCTestCase {
                     encodedLegJSON[0].removeValue(forKey: "profileIdentifier")
                     encodedRouteJSON?["legs"] = encodedLegJSON
                 }
-
-                // https://github.com/track-asia/trackasia-directions-swift/issues/125
-                var referenceRouteJSON = routeJSON
-                referenceRouteJSON.removeValue(forKey: "weight")
-                referenceRouteJSON.removeValue(forKey: "weight_name")
-                var referenceLegJSON = referenceRouteJSON["legs"] as! [[String: Any?]]
-                referenceLegJSON[0].removeValue(forKey: "weight")
-                referenceRouteJSON["legs"] = referenceLegJSON
                 
-                XCTAssert(JSONSerialization.objectsAreEqual(referenceRouteJSON, encodedRouteJSON, approximate: true))
+                XCTAssert(JSONSerialization.objectsAreEqual(routeJSON, encodedRouteJSON, approximate: true))
             }
         }
     }
@@ -87,7 +128,7 @@ class RouteTests: XCTestCase {
         // Key arguments:
         // - voice_instructions=true - makes the API to include "voiceLocale" in the response
         // - language=he - one of the unsupported languages by the API, which makes API to return `nil` for "voiceLocale"
-        // https://api.mapbox.com/route/v1/mapbox/driving-traffic/-105.081986,39.73843;-104.954255,39.662569?overview=false&language=he&voice_instructions=true&access_token=...
+        // https://api.mapbox.com/router/v1/mapbox/driving-traffic/-105.081986,39.73843;-104.954255,39.662569?overview=false&language=he&voice_instructions=true&access_token=...
 
         let routeJSON: [String: Any?] = [
             "legs": [

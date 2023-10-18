@@ -11,4 +11,9 @@ Carthage/Build
 Carthage/Checkouts
 /build
 /documentation
+/swift-package-baseline/*/MapboxDirections.json
 .build
+.vscode
+
+vendor/bundle/ruby/
+IntegrationWithNavigationSDK/MapboxNavigationSwiftUI.xcodeproj.disabled/project.xcworkspace/xcshareddata/swiftpm/Package.resolved

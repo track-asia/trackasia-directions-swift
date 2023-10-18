@@ -13,8 +13,7 @@ RELEASE_BRANCH=${1:-master}
 VERSION=${1}
 FOLDER=${VERSION:1} # removes first character from VERSION (v)
 
-step "Updating trackasia-directions-swift repository…"
-git fetch --depth=1 --prune
+step "Updating mapbox-directions-swift repository…"
 git fetch --tags
 git checkout $RELEASE_BRANCH
 
@@ -24,7 +23,7 @@ step "Installing dependencies…"
 carthage bootstrap --cache-builds --use-xcframeworks
 
 step "Updating jazzy…"
-gem install jazzy
+bundle install
 
 step "Generating new docs for ${VERSION}…"
 OUTPUT=${OUTPUT} scripts/document.sh
@@ -35,6 +34,7 @@ mkdir -p "./$FOLDER"
 mv -v $OUTPUT/* "./$FOLDER"
 
 step "Switching branch to publisher-production"
+git checkout Gemfile.lock
 git checkout origin/publisher-production
 
 step "Committing API docs for $VERSION"

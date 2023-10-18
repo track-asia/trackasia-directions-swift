@@ -2,14 +2,38 @@ import Foundation
 #if canImport(FoundationNetworking)
 import FoundationNetworking
 #endif
+import Turf
 
-public struct MapMatchingResponse {
+/**
+ A `MapMatchingResponse` object is a structure that corresponds to a map matching response returned by the Mapbox Map Matching API.
+ */
+public struct MapMatchingResponse: ForeignMemberContainer {
+    public var foreignMembers: JSONObject = [:]
+    
+    /**
+     The raw HTTP response from the Map Matching API.
+     */
     public let httpResponse: HTTPURLResponse?
     
+    /**
+     An array of `Match` objects.
+     */
     public var matches : [Match]?
+    
+    /**
+     An array of `Tracepoint` objects that represent the location an input point was matched with, in the order in which they were matched.
+     This property will be `nil` if a trace point is omitted by the Map Matching API because it is an outlier.
+     */
     public var tracepoints: [Tracepoint?]?
     
+    /**
+     The criteria for the map matching response.
+     */
     public let options: MatchOptions
+    
+    /**
+     The credentials used to make the request.
+     */
     public let credentials: Credentials
     
     /**
@@ -53,5 +77,15 @@ extension MapMatchingResponse: Codable {
         
         tracepoints = try container.decodeIfPresent([Tracepoint?].self, forKey: .tracepoints)
         matches = try container.decodeIfPresent([Match].self, forKey: .matches)
+        
+        try decodeForeignMembers(notKeyedBy: CodingKeys.self, with: decoder)
+    }
+    
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encodeIfPresent(matches, forKey: .matches)
+        try container.encodeIfPresent(tracepoints, forKey: .tracepoints)
+        
+        try encodeForeignMembers(notKeyedBy: CodingKeys.self, to: encoder)
     }
 }

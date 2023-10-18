@@ -4,7 +4,10 @@ import Turf
 /**
  A single cross street along a step.
  */
-public struct Intersection {
+public struct Intersection: ForeignMemberContainer {
+    public var foreignMembers: JSONObject = [:]
+    public var lanesForeignMembers: [JSONObject] = []
+    
     // MARK: Creating an Intersection
     
     public init(location: LocationCoordinate2D,
@@ -22,7 +25,13 @@ public struct Intersection {
                 restStop: RestStop? = nil,
                 isUrban: Bool? = nil,
                 regionCode: String? = nil,
-                outletMapboxStreetsRoadClass: MapboxStreetsRoadClass? = nil) {
+                outletMapboxStreetsRoadClass: MapboxStreetsRoadClass? = nil,
+                railroadCrossing: Bool? = nil,
+                trafficSignal: Bool? = nil,
+                stopSign: Bool? = nil,
+                yieldSign: Bool? = nil,
+                interchange: Interchange? = nil,
+                junction: Junction? = nil) {
         self.location = location
         self.headings = headings
         self.approachIndex = approachIndex
@@ -39,6 +48,12 @@ public struct Intersection {
         self.restStop = restStop
         self.regionCode = regionCode
         self.outletMapboxStreetsRoadClass = outletMapboxStreetsRoadClass
+        self.railroadCrossing = railroadCrossing
+        self.trafficSignal = trafficSignal
+        self.stopSign = stopSign
+        self.yieldSign = yieldSign
+        self.interchange = interchange
+        self.junction = junction
     }
     
     // MARK: Getting the Location of the Intersection
@@ -166,6 +181,42 @@ public struct Intersection {
      If no lane information is available for the intersection, this property’s value is `nil`
      */
     public let usableLaneIndication: ManeuverDirection?
+    
+    /**
+     Indicates whether there is a railroad crossing at the intersection.
+     
+     If such information is not available for an intersection, this property’s value is `nil`.
+     */
+    public let railroadCrossing: Bool?
+    
+    /**
+     Indicates whether there is a traffic signal at the intersection.
+     
+     If such information is not available for an intersection, this property’s value is `nil`.
+     */
+    public let trafficSignal: Bool?
+    
+    /**
+     Indicates whether there is a stop sign at the intersection.
+     
+     If such information is not available for an intersection, this property’s value is `nil`.
+     */
+    public let stopSign: Bool?
+    
+    /**
+     Indicates whether there is a yield sign at the intersection.
+     
+     If such information is not available for an intersection, this property’s value is `nil`.
+     */
+    public let yieldSign: Bool?
+
+    /// An object containing information about routing and passing interchange along the route.
+    /// If such information is not available for an intersection, this property’s value is `nil`.
+    public let interchange: Interchange?
+
+    /// An object containing information about routing and passing junction along the route.
+    /// If such information is not available for an intersection, this property’s value is `nil`.
+    public let junction: Junction?
 }
 
 extension Intersection: Codable {
@@ -184,10 +235,18 @@ extension Intersection: Codable {
         case restStop = "rest_stop"
         case administrativeRegionIndex = "admin_index"
         case geometryIndex = "geometry_index"
+        case railroadCrossing = "railway_crossing"
+        case trafficSignal = "traffic_signal"
+        case stopSign = "stop_sign"
+        case yieldSign = "yield_sign"
+        case interchange = "ic"
+        case junction = "jct"
     }
     
     /// Used to code `Intersection.outletMapboxStreetsRoadClass`
-    private struct MapboxStreetClassCodable: Codable {
+    private struct MapboxStreetClassCodable: Codable, ForeignMemberContainer {
+        var foreignMembers: JSONObject = [:]
+        
         private enum CodingKeys: String, CodingKey {
             case streetClass = "class"
         }
@@ -207,6 +266,14 @@ extension Intersection: Codable {
                 streetClass = nil
             }
             
+            try decodeForeignMembers(notKeyedBy: CodingKeys.self, with: decoder)
+        }
+        
+        func encode(to encoder: Encoder) throws {
+            var container = encoder.container(keyedBy: CodingKeys.self)
+            try container.encodeIfPresent(streetClass, forKey: .streetClass)
+            
+            try encodeForeignMembers(notKeyedBy: CodingKeys.self, to: encoder)
         }
     }
 
@@ -272,6 +339,9 @@ extension Intersection: Codable {
                    validLanes[i].indications.descriptions.contains(usableLaneIndication.rawValue) {
                     lanes?[i].validIndication = usableLaneIndication
                 }
+                if usableApproachLanes.count == lanesForeignMembers.count {
+                    lanes?[i].foreignMembers = lanesForeignMembers[i]
+                }
             }
             
             for j in preferredApproachLanes {
@@ -311,6 +381,27 @@ extension Intersection: Codable {
         if let geoIndex = geometryIndex {
             try container.encode(geoIndex, forKey: .geometryIndex)
         }
+        
+        if let railwayCrossing = railroadCrossing {
+            try container.encode(railwayCrossing, forKey: .railroadCrossing)
+        }
+        
+        if let trafficSignal = trafficSignal {
+            try container.encode(trafficSignal, forKey: .trafficSignal)
+        }
+        
+        if let stopSign = stopSign {
+            try container.encode(stopSign, forKey: .stopSign)
+        }
+
+        if let yieldSign = yieldSign {
+            try container.encode(yieldSign, forKey: .yieldSign)
+        }
+
+        try container.encodeIfPresent(interchange, forKey: .interchange)
+        try container.encodeIfPresent(junction, forKey: .junction)
+        
+        try encodeForeignMembers(notKeyedBy: CodingKeys.self, to: encoder)
     }
     
     public init(from decoder: Decoder) throws {
@@ -319,6 +410,7 @@ extension Intersection: Codable {
         headings = try container.decode([LocationDirection].self, forKey: .headings)
         
         if let lanes = try container.decodeIfPresent([Lane].self, forKey: .lanes) {
+            lanesForeignMembers = lanes.map(\.foreignMembers)
             approachLanes = lanes.map { $0.indications }
             usableApproachLanes = lanes.indices { $0.isValid }
             preferredApproachLanes = lanes.indices { ($0.isActive ?? false) }
@@ -352,6 +444,16 @@ extension Intersection: Codable {
         isUrban = try container.decodeIfPresent(Bool.self, forKey: .isUrban)
 
         restStop = try container.decodeIfPresent(RestStop.self, forKey: .restStop)
+        
+        railroadCrossing = try container.decodeIfPresent(Bool.self, forKey: .railroadCrossing)
+        trafficSignal = try container.decodeIfPresent(Bool.self, forKey: .trafficSignal)
+        stopSign = try container.decodeIfPresent(Bool.self, forKey: .stopSign)
+        yieldSign = try container.decodeIfPresent(Bool.self, forKey: .yieldSign)
+
+        interchange = try container.decodeIfPresent(Interchange.self, forKey: .interchange)
+        junction = try container.decodeIfPresent(Junction.self, forKey: .junction)
+        
+        try decodeForeignMembers(notKeyedBy: CodingKeys.self, with: decoder)
     }
 }
 
@@ -372,6 +474,12 @@ extension Intersection: Equatable {
             lhs.outletRoadClasses == rhs.outletRoadClasses &&
             lhs.tollCollection == rhs.tollCollection &&
             lhs.tunnelName == rhs.tunnelName &&
-            lhs.isUrban == rhs.isUrban
+            lhs.isUrban == rhs.isUrban &&
+            lhs.railroadCrossing == rhs.railroadCrossing &&
+            lhs.trafficSignal == rhs.trafficSignal &&
+            lhs.stopSign == rhs.stopSign &&
+            lhs.yieldSign == rhs.yieldSign &&
+            lhs.interchange == rhs.interchange &&
+            lhs.junction == rhs.junction
     }
 }

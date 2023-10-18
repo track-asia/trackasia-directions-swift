@@ -1,4 +1,5 @@
 import Foundation
+import Turf
 #if canImport(FoundationNetworking)
 import FoundationNetworking
 #endif
@@ -8,18 +9,47 @@ public enum ResponseOptions {
     case match(MatchOptions)
 }
 
-public struct RouteResponse {
+/**
+ A `RouteResponse` object is a structure that corresponds to a directions response returned by the Mapbox Directions API.
+ */
+public struct RouteResponse: ForeignMemberContainer {
+    public var foreignMembers: JSONObject = [:]
+    
+    /**
+     The raw HTTP response from the Directions API.
+     */
     public let httpResponse: HTTPURLResponse?
     
+    /**
+     The unique identifier that the Mapbox Directions API has assigned to this response.
+     */
     public let identifier: String?
+    
+    /**
+     An array of `Route` objects sorted from most recommended to least recommended. A route may be highly recommended based on characteristics such as expected travel time or distance.
+     This property contains a maximum of two `Route`s.
+     */
     public var routes: [Route]? {
         didSet {
             updateRoadClassExclusionViolations()
         }
     }
+    
+    /**
+     An array of `Waypoint` objects in the order of the input coordinates. Each `Waypoint` is an input coordinate snapped to the road and path network.
+    
+     This property omits the waypoint corresponding to any waypoint in `RouteOptions.waypoints` that has `Waypoint.separatesLegs` set to `true`.
+     */
     public let waypoints: [Waypoint]?
     
+    /**
+     The criteria for the directions response.
+     */
     public let options: ResponseOptions
+    
+    /**
+     The credentials used to make the request.
+     */
     public let credentials: Credentials
     
     /**
@@ -43,7 +73,6 @@ public struct RouteResponse {
 
 extension RouteResponse: Codable {
     enum CodingKeys: String, CodingKey {
-        case code
         case message
         case error
         case identifier = "uuid"
@@ -128,12 +157,14 @@ extension RouteResponse: Codable {
                 let waypoint = Waypoint(coordinate: decodedWaypoint.coordinate,
                                         coordinateAccuracy: waypointInOptions.coordinateAccuracy,
                                         name: waypointInOptions.name?.nonEmptyString ?? decodedWaypoint.name)
-
+                waypoint.snappedDistance = decodedWaypoint.snappedDistance
                 waypoint.targetCoordinate = waypointInOptions.targetCoordinate
                 waypoint.heading = waypointInOptions.heading
                 waypoint.headingAccuracy = waypointInOptions.headingAccuracy
                 waypoint.separatesLegs = waypointInOptions.separatesLegs
                 waypoint.allowsArrivingOnOppositeSide = waypointInOptions.allowsArrivingOnOppositeSide
+                
+                waypoint.foreignMembers = decodedWaypoint.foreignMembers
                 
                 return waypoint
             }
@@ -157,6 +188,8 @@ extension RouteResponse: Codable {
         }
         
         updateRoadClassExclusionViolations()
+        
+        try decodeForeignMembers(notKeyedBy: CodingKeys.self, with: decoder)
     }
     
     public func encode(to encoder: Encoder) throws {
@@ -164,6 +197,8 @@ extension RouteResponse: Codable {
         try container.encodeIfPresent(identifier, forKey: .identifier)
         try container.encodeIfPresent(routes, forKey: .routes)
         try container.encodeIfPresent(waypoints, forKey: .waypoints)
+        
+        try encodeForeignMembers(notKeyedBy: CodingKeys.self, to: encoder)
     }
 
 }

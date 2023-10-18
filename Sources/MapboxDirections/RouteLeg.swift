@@ -7,8 +7,20 @@ import Turf
 
  You do not create instances of this class directly. Instead, you receive route leg objects as part of route objects when you request directions using the `Directions.calculate(_:completionHandler:)` method.
  */
-open class RouteLeg: Codable {
-    public enum CodingKeys: String, CodingKey {
+
+open class RouteLeg: Codable, ForeignMemberContainerClass {
+    public var foreignMembers: JSONObject = [:]
+    
+    /**
+     Foreign attribute arrays associated with this leg.
+     
+     This library does not officially support any attribute that is documented as a “beta” annotation type in the Mapbox Directions API response format, but you can get and set it as an element of this `JSONObject`. It is round-tripped to the `annotation` property in JSON.
+     
+     For non-attribute-related foreign members, use the `foreignMembers` property.
+     */
+    public var attributesForeignMembers: JSONObject = [:]
+    
+    public enum CodingKeys: String, CodingKey, CaseIterable {
         case source
         case destination
         case steps
@@ -21,6 +33,7 @@ open class RouteLeg: Codable {
         case administrativeRegions = "admins"
         case incidents
         case viaWaypoints = "via_waypoints"
+        case closures = "closures"
     }
     
     // MARK: Creating a Leg
@@ -81,15 +94,22 @@ open class RouteLeg: Codable {
         
         if let attributes = try container.decodeIfPresent(Attributes.self, forKey: .annotation) {
             self.attributes = attributes
+            self.attributesForeignMembers = attributes.foreignMembers
         }
 
         if let incidents = try container.decodeIfPresent([Incident].self, forKey: .incidents) {
             self.incidents = incidents
         }
 
+        if let closures = try container.decodeIfPresent([Closure].self, forKey: .closures) {
+            self.closures = closures
+        }
+        
         if let viaWaypoints = try container.decodeIfPresent([SilentWaypoint].self, forKey: .viaWaypoints) {
             self.viaWaypoints = viaWaypoints
         }
+        
+        try decodeForeignMembers(notKeyedBy: CodingKeys.self, with: decoder)
     }
     
     public func encode(to encoder: Encoder) throws {
@@ -103,8 +123,9 @@ open class RouteLeg: Codable {
         try container.encodeIfPresent(typicalTravelTime, forKey: .typicalTravelTime)
         try container.encode(profileIdentifier, forKey: .profileIdentifier)
         
-        let attributes = self.attributes
+        var attributes = self.attributes
         if !attributes.isEmpty {
+            attributes.foreignMembers = self.attributesForeignMembers
             try container.encode(attributes, forKey: .annotation)
         }
 
@@ -115,10 +136,15 @@ open class RouteLeg: Codable {
         if let incidents = incidents {
             try container.encode(incidents, forKey: .incidents)
         }
+        if let closures = closures {
+            try container.encode(closures, forKey: .closures)
+        }
 
         if let viaWaypoints = viaWaypoints {
             try container.encode(viaWaypoints, forKey: .viaWaypoints)
         }
+        
+        try encodeForeignMembers(to: encoder)
     }
     
     // MARK: Getting the Endpoints of the Leg
@@ -238,6 +264,19 @@ open class RouteLeg: Codable {
     open var segmentMaximumSpeedLimits: [Measurement<UnitSpeed>?]?
     
     /**
+     An array of `Closure` objects describing live-traffic related closures that occur along the route.
+     
+     This information is only available for the `mapbox/driving-traffic` profile and when `RouteOptions.attributeOptions` property contains `AttributeOptions.closures`.
+     */
+    open var closures: [Closure]?
+    
+    /**
+     :nodoc:
+     The tendency value conveys the changing state of traffic congestion (increasing, decreasing, constant etc).
+     */
+    open var trafficTendencies: [TrafficTendency]?
+    
+    /**
      The full collection of attributes along the leg.
      */
     var attributes: Attributes {
@@ -247,7 +286,8 @@ open class RouteLeg: Codable {
                               segmentSpeeds: segmentSpeeds,
                               segmentCongestionLevels: segmentCongestionLevels,
                               segmentNumericCongestionLevels: segmentNumericCongestionLevels,
-                              segmentMaximumSpeedLimits: segmentMaximumSpeedLimits)
+                              segmentMaximumSpeedLimits: segmentMaximumSpeedLimits,
+                              trafficTendencies: trafficTendencies)
         }
         set {
             segmentDistances = newValue.segmentDistances
@@ -256,6 +296,43 @@ open class RouteLeg: Codable {
             segmentCongestionLevels = newValue.segmentCongestionLevels
             segmentNumericCongestionLevels = newValue.segmentNumericCongestionLevels
             segmentMaximumSpeedLimits = newValue.segmentMaximumSpeedLimits
+            trafficTendencies = newValue.trafficTendencies
+        }
+    }
+
+    func refreshAttributes(newAttributes: Attributes, startLegShapeIndex: Int = 0) {
+        let refreshRange = PartialRangeFrom(startLegShapeIndex)
+
+        segmentDistances?.replaceIfPossible(subrange: refreshRange, with: newAttributes.segmentDistances)
+        expectedSegmentTravelTimes?.replaceIfPossible(subrange: refreshRange, with: newAttributes.expectedSegmentTravelTimes)
+        segmentSpeeds?.replaceIfPossible(subrange: refreshRange, with: newAttributes.segmentSpeeds)
+        segmentCongestionLevels?.replaceIfPossible(subrange: refreshRange, with: newAttributes.segmentCongestionLevels)
+        segmentNumericCongestionLevels?.replaceIfPossible(subrange: refreshRange, with: newAttributes.segmentNumericCongestionLevels)
+        segmentMaximumSpeedLimits?.replaceIfPossible(subrange: refreshRange, with: newAttributes.segmentMaximumSpeedLimits)
+        trafficTendencies?.replaceIfPossible(subrange: refreshRange, with: newAttributes.trafficTendencies)
+    }
+    
+    private func adjustShapeIndexRange(_ range: Range<Int>, startLegShapeIndex: Int) -> Range<Int> {
+        let startIndex = startLegShapeIndex + range.lowerBound
+        let endIndex = startLegShapeIndex + range.upperBound
+        return startIndex..<endIndex
+    }
+    
+    func refreshIncidents(newIncidents: [Incident]?, startLegShapeIndex: Int = 0) {
+        incidents = newIncidents?.map { incident in
+            var adjustedIncident = incident
+            adjustedIncident.shapeIndexRange = adjustShapeIndexRange(incident.shapeIndexRange,
+                                                                     startLegShapeIndex: startLegShapeIndex)
+            return adjustedIncident
+        }
+    }
+
+    func refreshClosures(newClosures: [Closure]?, startLegShapeIndex: Int = 0) {
+        closures = newClosures?.map { closure in
+            var adjustedClosure = closure
+            adjustedClosure.shapeIndexRange = adjustShapeIndexRange(closure.shapeIndexRange,
+                                                                    startLegShapeIndex: startLegShapeIndex)
+            return adjustedClosure
         }
     }
     
@@ -356,6 +433,7 @@ extension RouteLeg: Equatable {
             lhs.segmentCongestionLevels == rhs.segmentCongestionLevels &&
             lhs.segmentNumericCongestionLevels == rhs.segmentNumericCongestionLevels &&
             lhs.segmentMaximumSpeedLimits == rhs.segmentMaximumSpeedLimits &&
+            lhs.trafficTendencies == rhs.trafficTendencies &&
             lhs.name == rhs.name &&
             lhs.distance == rhs.distance &&
             lhs.expectedTravelTime == rhs.expectedTravelTime &&
@@ -383,6 +461,44 @@ extension RouteLeg: CustomQuickLookConvertible {
     }
 }
 
+extension RouteLeg {
+    /**
+     Live-traffic related closure that occured along the route.
+     */
+    public struct Closure: Codable, Equatable, ForeignMemberContainer {
+        public var foreignMembers: JSONObject = [:]
+
+        private enum CodingKeys: String, CodingKey {
+            case geometryIndexStart = "geometry_index_start"
+            case geometryIndexEnd = "geometry_index_end"
+        }
+
+        /**
+         The range of segments within the current leg, where the closure spans.
+         */
+        public var shapeIndexRange: Range<Int>
+        
+        public init(from decoder: Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            
+            let geometryIndexStart = try container.decode(Int.self, forKey: .geometryIndexStart)
+            let geometryIndexEnd = try container.decode(Int.self, forKey: .geometryIndexEnd)
+            shapeIndexRange = geometryIndexStart..<geometryIndexEnd
+            
+            try decodeForeignMembers(notKeyedBy: CodingKeys.self, with: decoder)
+        }
+        
+        public func encode(to encoder: Encoder) throws {
+            var container = encoder.container(keyedBy: CodingKeys.self)
+            
+            try container.encode(shapeIndexRange.lowerBound, forKey: .geometryIndexStart)
+            try container.encode(shapeIndexRange.upperBound, forKey: .geometryIndexEnd)
+            
+            try encodeForeignMembers(notKeyedBy: CodingKeys.self, to: encoder)
+        }
+    }
+}
+
 public extension Array where Element == RouteLeg {
     /**
      Populates source and destination information for each leg with waypoint information, typically gathered from `DirectionsOptions`.
@@ -394,5 +510,17 @@ public extension Array where Element == RouteLeg {
             leg.source = endpoints.0
             leg.destination = endpoints.1
         }
+    }
+}
+
+private extension Array {
+    mutating func replaceIfPossible(subrange: PartialRangeFrom<Int>, with newElements: Array?) {
+        guard let newElements = newElements, !newElements.isEmpty else { return }
+        let upperBound = subrange.lowerBound + newElements.count
+        
+        guard count >= upperBound else { return }
+        
+        let adjustedSubrange = subrange.lowerBound..<upperBound
+        replaceSubrange(adjustedSubrange, with: newElements)
     }
 }

@@ -15,7 +15,7 @@ public struct ProfileIdentifier: Codable, Hashable, RawRepresentable {
     
     This profile prioritizes fast routes by preferring high-speed roads like highways. A driving route may use a ferry where necessary.
     */
-    public static let automobile: ProfileIdentifier = .init(rawValue: "mapbox/driving")
+    public static let automobile: ProfileIdentifier = .init(rawValue: "driving")
     
     /**
     The returned directions are appropriate for driving or riding a car, truck, or motorcycle.
@@ -26,21 +26,25 @@ public struct ProfileIdentifier: Codable, Hashable, RawRepresentable {
      
      - note: This profile is not supported by `Isochrones` API.
     */
-    public static let automobileAvoidingTraffic: ProfileIdentifier = .init(rawValue: "mapbox/driving-traffic")
+    public static let automobileAvoidingTraffic: ProfileIdentifier = .init(rawValue: "driving-traffic")
     
     /**
     The returned directions are appropriate for riding a bicycle.
     
     This profile prioritizes short, safe routes by avoiding highways and preferring cycling infrastructure, such as bike lanes on surface streets. A cycling route may, where necessary, use other modes of transportation, such as ferries or trains, or require dismounting the bicycle for a distance.
     */
-    public static let cycling: ProfileIdentifier = .init(rawValue: "mapbox/cycling")
+    public static let cycling: ProfileIdentifier = .init(rawValue: "cycling")
     
     /**
     The returned directions are appropriate for walking or hiking.
     
     This profile prioritizes short routes, making use of sidewalks and trails where available. A walking route may use other modes of transportation, such as ferries or trains, where necessary.
     */
-    public static let walking: ProfileIdentifier = .init(rawValue: "mapbox/walking")
+    public static let walking: ProfileIdentifier = .init(rawValue: "walking")
+
+    public static let car: ProfileIdentifier = .init(rawValue: "car")
+
+    public static let moto: ProfileIdentifier = .init(rawValue: "moto")
 }
 
 

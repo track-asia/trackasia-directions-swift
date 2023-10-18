@@ -40,9 +40,37 @@ if [[ $SHORT_VERSION == $SEM_VERSION && $SHORT_VERSION == *.0 ]]; then
     sed -i '' -E "s/~> *[^']+/~> ${MINOR_VERSION}/g; s/.git\", from: \"*[^\"]+/.git\", from: \"${SEM_VERSION}/g" README.md
 elif [[ $SHORT_VERSION != $SEM_VERSION ]]; then
     step "Updating readmes to version ${SEM_VERSION}…"
-    sed -i '' -E "s/:tag => 'v[^']+'/:tag => 'v${SEM_VERSION}'/g; s/'MapboxDirections-pre', *'[^']+'/'MapboxDirections-pre', '${SEM_VERSION}'/g; s/\"mapbox\/trackasia-directions-swift\" \"v[^\"]+\"/\"mapbox\/trackasia-directions-swift\" \"v${SEM_VERSION}\"/g; s/\.exact\\(\"*[^\"]+/.exact(\"${SEM_VERSION}/g" README.md
+    sed -i '' -E "s/:tag => 'v[^']+'/:tag => 'v${SEM_VERSION}'/g; s/'MapboxDirections-pre', *'[^']+'/'MapboxDirections-pre', '${SEM_VERSION}'/g; s/\"mapbox\/mapbox-directions-swift\" \"v[^\"]+\"/\"mapbox\/mapbox-directions-swift\" \"v${SEM_VERSION}\"/g; s/\.exact\\(\"*[^\"]+/.exact(\"${SEM_VERSION}/g" README.md
 fi
 
 step "Updating copyright year to ${YEAR}…"
 
 sed -i '' -E "s/© ([0-9]{4})[–-][0-9]{4}/© \\1–${YEAR}/g" LICENSE.md docs/jazzy.yml Sources/MapboxDirections/Info.plist
+
+# Bumping baseline if this is not alpha or beta release. During alpha/beta it is allowed to break the API that was added during alpha-beta cycle.
+if [[ $1 != *alpha* && $1 != *beta* ]]; then
+    step "Bumping API baseline"
+    ./scripts/update-baseline.sh $1
+fi
+
+BRANCH_NAME="update-version-${SEM_VERSION}"
+git checkout -b $BRANCH_NAME
+git add .
+git commit -m "Update version ${SEM_VERSION}"
+git push origin $BRANCH_NAME
+
+if [[ $SEM_VERSION =~ "alpha" || $SEM_VERSION =~ "beta" ]]; then
+    BASE_BRANCH_NAME="main"
+  else
+    MAJOR=${SEM_VERSION%%.*}
+    MINOR_TMP=${SEM_VERSION#*.}
+    MINOR=${MINOR_TMP%%.*}
+    BASE_BRANCH_NAME="release-v${MAJOR}.${MINOR}"
+fi
+
+brew install gh
+GITHUB_TOKEN=$GITHUB_WRITER_TOKEN gh pr create \
+    --title "Release v${SEM_VERSION}" \
+    --body "Bump version to ${SEM_VERSION}" \
+    --base $BASE_BRANCH_NAME \
+    --head $BRANCH_NAME

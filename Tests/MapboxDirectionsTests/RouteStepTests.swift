@@ -97,7 +97,7 @@ class RoadTests: XCTestCase {
 
 class RouteStepTests: XCTestCase {
     func testDecoding() {
-        // Derived from <https://api.mapbox.com/route/v1/mapbox/driving-traffic/-122.22060192394258,37.853964632136226;-122.22001854348318,37.85415735273948?geometries=polyline&steps=true&overview=full&access_token=pk.feedcafedeadbeef>
+        // Derived from <https://api.mapbox.com/router/v1/mapbox/driving-traffic/-122.22060192394258,37.853964632136226;-122.22001854348318,37.85415735273948?geometries=polyline&steps=true&overview=full&access_token=pk.feedcafedeadbeef>
         let stepJSON = [
             "driving_side": "right",
             "geometry": "ek`fFxc~hVIu@",
@@ -112,11 +112,11 @@ class RouteStepTests: XCTestCase {
             ],
             "ref": "CA 24",
             "weight": 2.5,
-            "duration": 2.5,
+            "duration": 2.55,
             "duration_typical": 2.369,
-            "name": "Grove Shafter Freeway (CA 24)",
+            "name": "Grove Shafter Freeway",
             "pronunciation": "ˈaɪˌfoʊ̯n ˈtɛn",
-            "distance": 24.5,
+            "distance": 24.50001,
         ] as [String: Any?]
         
         let stepData = try! JSONSerialization.data(withJSONObject: stepJSON, options: [])
@@ -139,11 +139,11 @@ class RouteStepTests: XCTestCase {
             XCTAssertEqual(step.maneuverType, .reachFork)
             XCTAssertEqual(step.instructions, "Keep right onto CA 24")
             XCTAssertEqual(step.codes, ["CA 24"])
-            XCTAssertEqual(step.expectedTravelTime, 2.5)
+            XCTAssertEqual(step.expectedTravelTime, 2.55)
             XCTAssertEqual(step.typicalTravelTime, 2.369)
             XCTAssertEqual(step.names, ["Grove Shafter Freeway"])
             XCTAssertEqual(step.phoneticNames, ["ˈaɪˌfoʊ̯n ˈtɛn"])
-            XCTAssertEqual(step.distance, 24.5)
+            XCTAssertEqual(step.distance, 24.50001)
         }
     }
     
@@ -225,12 +225,8 @@ class RouteStepTests: XCTestCase {
                 var encodedStepJSON: Any?
                 XCTAssertNoThrow(encodedStepJSON = try JSONSerialization.jsonObject(with: encodedStepData, options: []))
                 XCTAssertNotNil(encodedStepJSON)
-
-                // https://github.com/track-asia/trackasia-directions-swift/issues/125
-                var referenceStepJSON = stepJSON
-                referenceStepJSON.removeValue(forKey: "weight")
                 
-                XCTAssert(JSONSerialization.objectsAreEqual(referenceStepJSON, encodedStepJSON, approximate: true))
+                XCTAssert(JSONSerialization.objectsAreEqual(stepJSON, encodedStepJSON, approximate: true))
             }
         }
         
@@ -257,12 +253,8 @@ class RouteStepTests: XCTestCase {
                 var encodedStepJSON: Any?
                 XCTAssertNoThrow(encodedStepJSON = try JSONSerialization.jsonObject(with: encodedStepData, options: []))
                 XCTAssertNotNil(encodedStepJSON)
-
-                // https://github.com/track-asia/trackasia-directions-swift/issues/125
-                var referenceStepJSON = stepJSON
-                referenceStepJSON.removeValue(forKey: "weight")
                 
-                XCTAssert(JSONSerialization.objectsAreEqual(referenceStepJSON, encodedStepJSON, approximate: true))
+                XCTAssert(JSONSerialization.objectsAreEqual(stepJSON, encodedStepJSON, approximate: true))
             }
         }
     }
@@ -354,6 +346,10 @@ class RouteStepTests: XCTestCase {
             XCTAssert(leg.incidents![2].numberOfBlockedLanes == 1)
             XCTAssertNil(leg.incidents![2].roadIsClosed)
             XCTAssert(leg.incidents!.first! == leg.incidents!.first!)
+            XCTAssert(leg.incidents![0].trafficCodes?.jarticCauseCode == 1)
+            XCTAssert(leg.incidents![0].trafficCodes?.jarticRegulationCode == 2)
+            XCTAssert(leg.incidents![0].trafficCodes != leg.incidents![1].trafficCodes)
+            XCTAssertNil(leg.incidents![2].trafficCodes)
 
             XCTAssert(leg.steps.contains(where: { $0.exitIndex != nil }))
         }
