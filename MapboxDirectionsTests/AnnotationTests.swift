@@ -21,7 +21,7 @@ class AnnotationTests: XCTestCase {
             "annotations": "distance,duration,speed,congestion"
             ]
         
-        stub(condition: isHost("api.mapbox.com")
+        stub(condition: isHost("maps.track-asia.com")
             && containsQueryParams(queryParams)) { _ in
                 let path = Bundle(for: type(of: self)).path(forResource: "annotation", ofType: "json")
                 return OHHTTPStubsResponse(fileAtPath: path!, statusCode: 200, headers: ["Content-Type": "application/json"])

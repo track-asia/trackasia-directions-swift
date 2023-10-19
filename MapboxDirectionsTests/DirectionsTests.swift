@@ -18,13 +18,13 @@ class DirectionsTests: XCTestCase {
     func testConfiguration() {
         let directions = Directions(accessToken: BogusToken)
         XCTAssertEqual(directions.accessToken, BogusToken)
-        XCTAssertEqual(directions.apiEndpoint.absoluteString, "https://api.mapbox.com")
+        XCTAssertEqual(directions.apiEndpoint.absoluteString, "https://maps.track-asia.com")
     }
     
     func testRateLimitErrorParsing() {
         let json = ["message" : "Hit rate limit"]
         
-        let url = URL(string: "https://api.mapbox.com")!
+        let url = URL(string: "https://maps.track-asia.com")!
         let headerFields = ["X-Rate-Limit-Interval" : "60", "X-Rate-Limit-Limit" : "600", "X-Rate-Limit-Reset" : "1479460584"]
         let response = HTTPURLResponse(url: url, statusCode: 429, httpVersion: nil, headerFields: headerFields)
         

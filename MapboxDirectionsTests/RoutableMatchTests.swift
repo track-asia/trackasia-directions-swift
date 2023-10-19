@@ -18,9 +18,9 @@ class RoutableMatchTest: XCTestCase {
                          CLLocationCoordinate2D(latitude: 32.712597, longitude: -117.173143),
                          CLLocationCoordinate2D(latitude: 32.712546, longitude: -117.173345)]
         
-        stub(condition: isHost("api.mapbox.com")
+        stub(condition: isHost("maps.track-asia.com")
             && isMethodPOST()
-            && isPath("/matching/v5/mapbox/driving")) { _ in
+            && isPath("/matching/v5//driving")) { _ in
                 let path = Bundle(for: type(of: self)).path(forResource: "match", ofType: "json")
                 return OHHTTPStubsResponse(fileAtPath: path!, statusCode: 200, headers: ["Content-Type": "application/json"])
         }
@@ -54,7 +54,7 @@ class RoutableMatchTest: XCTestCase {
         XCTAssertNotNil(route.coordinates)
         XCTAssertEqual(route.coordinates!.count, 8)
         XCTAssertEqual(route.accessToken, BogusToken)
-        XCTAssertEqual(route.apiEndpoint, URL(string: "https://api.mapbox.com"))
+        XCTAssertEqual(route.apiEndpoint, URL(string: "https://maps.track-asia.com"))
         XCTAssertEqual(route.routeIdentifier, nil)
         
         XCTAssertNotNil(waypoints)

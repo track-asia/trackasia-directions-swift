@@ -18,7 +18,7 @@ class V4Tests: XCTestCase {
             "steps": "true",
             "access_token": BogusToken,
         ]
-        stub(condition: isHost("api.mapbox.com")
+        stub(condition: isHost("maps.track-asia.com")
             && isPath("/v4/directions/mapbox.driving/-122.42,37.78;-77.03,38.91.json")
             && containsQueryParams(queryParams)) { _ in
                 let path = Bundle(for: type(of: self)).path(forResource: "v4_driving_dc_\(shapeFormat)", ofType: "json")
@@ -54,7 +54,7 @@ class V4Tests: XCTestCase {
         XCTAssertNotNil(route!.coordinates)
         XCTAssertEqual(route!.coordinates!.count, 28375)
         XCTAssertEqual(route!.accessToken, BogusToken)
-        XCTAssertEqual(route!.apiEndpoint, URL(string: "https://api.mapbox.com"))
+        XCTAssertEqual(route!.apiEndpoint, URL(string: "https://maps.track-asia.com"))
         
         XCTAssertEqual(round(route!.coordinates!.first!.latitude), 38)
         XCTAssertEqual(round(route!.coordinates!.first!.longitude), -122)

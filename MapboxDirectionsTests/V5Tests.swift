@@ -22,8 +22,8 @@ class V5Tests: XCTestCase {
             "continue_straight": "true",
             "access_token": BogusToken,
         ]
-        stub(condition: isHost("api.mapbox.com")
-            && isPath("/directions/v5/mapbox/driving/-122.42,37.78;-77.03,38.91.json")
+        stub(condition: isHost("maps.track-asia.com")
+            && isPath("/route/v1//driving/-122.42,37.78;-77.03,38.91.json")
             && containsQueryParams(queryParams)) { _ in
                 let path = Bundle(for: type(of: self)).path(forResource: filePath ?? "v5_driving_dc_\(shapeFormat)", ofType: "json")
                 let filePath = URL(fileURLWithPath: path!)
@@ -63,7 +63,7 @@ class V5Tests: XCTestCase {
         XCTAssertNotNil(route!.coordinates)
         XCTAssertEqual(route!.coordinates!.count, 28_442)
         XCTAssertEqual(route!.accessToken, BogusToken)
-        XCTAssertEqual(route!.apiEndpoint, URL(string: "https://api.mapbox.com"))
+        XCTAssertEqual(route!.apiEndpoint, URL(string: "https://maps.track-asia.com"))
         XCTAssertEqual(route!.routeIdentifier, "cj725hpi30yp2ztm2ehbcipmh")
         XCTAssertEqual(route!.speechLocale!.identifier, "en-US")
         

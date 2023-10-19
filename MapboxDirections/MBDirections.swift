@@ -148,7 +148,7 @@ open class Directions: NSObject {
             baseURLComponents.host = host
             apiEndpoint = baseURLComponents.url!
         } else {
-            apiEndpoint = URL(string:(defaultApiEndPointURLString ?? "https://api.mapbox.com"))!
+            apiEndpoint = URL(string:(defaultApiEndPointURLString ?? "https://maps.track-asia.com"))!
         }
         
     }

@@ -66,6 +66,10 @@ public enum TransportType: Int, CustomStringConvertible {
      The user should consult the train’s timetable. For cycling directions, the user should also verify that bicycles are permitted onboard the train.
      */
     case train // cycling
+
+    case car
+
+    case moto
     
     public init?(description: String) {
         let type: TransportType
@@ -86,6 +90,8 @@ public enum TransportType: Int, CustomStringConvertible {
             type = .cycling
         case "train":
             type = .train
+        case "car":
+            type = .car
         default:
             return nil
         }
@@ -110,7 +116,10 @@ public enum TransportType: Int, CustomStringConvertible {
             return "cycling"
         case .train:
             return "train"
+        case .car:
+            return "car"
         }
+        
     }
 }
 
@@ -1064,5 +1073,5 @@ func debugQuickLookURL(illustrating coordinates: [CLLocationCoordinate2D], profi
         URLQueryItem(name: "access_token", value: accessToken),
     ]
     
-    return URL(string: "https://api.mapbox.com\(path)?\(components.percentEncodedQuery!)")
+    return URL(string: "https://maps.track-asia.com\(path)?\(components.percentEncodedQuery!)")
 }

@@ -181,7 +181,7 @@ tell theWhiteHouse to initWithCoordinate:{38.8977, -77.0365} coordinateAccuracy:
 set theWaypoints to {mapbox, theWhiteHouse}
 
 set theOptions to alloc of MBRouteOptions of the current application
-tell theOptions to initWithWaypoints:theWaypoints profileIdentifier:"mapbox/driving-traffic"
+tell theOptions to initWithWaypoints:theWaypoints profileIdentifier:"/driving-traffic"
 set theOptions's includesSteps to true
 
 set theURL to theDirections's URLForCalculatingDirectionsWithOptions:theOptions
@@ -189,7 +189,7 @@ set theData to the current application's NSData's dataWithContentsOfURL:theURL
 set theJSON to the current application's NSJSONSerialization's JSONObjectWithData:theData options:0 |error|:(missing value)
 
 set theRoute to alloc of MBRoute of the current application
-tell theRoute to initWithJson:(the first item of theJSON's routes) waypoints:theWaypoints profileIdentifier:"mapbox/driving"
+tell theRoute to initWithJson:(the first item of theJSON's routes) waypoints:theWaypoints profileIdentifier:"/driving"
 set theLeg to the first item of theRoute's legs
 
 log "Route via " & theLeg's |name| & ":"

@@ -24,7 +24,7 @@ class SpokenInstructionsTests: XCTestCase {
             "waypoint_names": "the hotel;the gym"
         ]
         
-        stub(condition: isHost("api.mapbox.com")
+        stub(condition: isHost("maps.track-asia.com")
             && containsQueryParams(queryParams)) { _ in
                 let path = Bundle(for: type(of: self)).path(forResource: "instructions", ofType: "json")
                 return OHHTTPStubsResponse(fileAtPath: path!, statusCode: 200, headers: ["Content-Type": "application/json"])
@@ -113,7 +113,7 @@ class SpokenInstructionsTests: XCTestCase {
             "banner_instructions": "true"
         ]
         
-        stub(condition: isHost("api.mapbox.com") && containsQueryParams(queryParams)) { _ in
+        stub(condition: isHost("maps.track-asia.com") && containsQueryParams(queryParams)) { _ in
             let path = Bundle(for: type(of: self)).path(forResource: "subLaneInstructions", ofType: "json")
             return OHHTTPStubsResponse(fileAtPath: path!, statusCode: 200, headers: ["Content-Type": "application/json"])
         }
@@ -180,7 +180,7 @@ class SpokenInstructionsTests: XCTestCase {
             "banner_instructions": "true"
         ]
         
-        stub(condition: isHost("api.mapbox.com") && containsQueryParams(queryParams)) { _ in
+        stub(condition: isHost("maps.track-asia.com") && containsQueryParams(queryParams)) { _ in
             let path = Bundle(for: type(of: self)).path(forResource: "subVisualInstructions", ofType: "json")
             return OHHTTPStubsResponse(fileAtPath: path!, statusCode: 200, headers: ["Content-Type": "application/json"])
         }

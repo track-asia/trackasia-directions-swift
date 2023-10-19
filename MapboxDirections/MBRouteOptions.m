@@ -1,7 +1,10 @@
 #import "MBRouteOptions.h"
 
 
-MBDirectionsProfileIdentifier const MBDirectionsProfileIdentifierAutomobile                 = @"mapbox/driving";
-MBDirectionsProfileIdentifier const MBDirectionsProfileIdentifierAutomobileAvoidingTraffic  = @"mapbox/driving-traffic";
-MBDirectionsProfileIdentifier const MBDirectionsProfileIdentifierCycling                    = @"mapbox/cycling";
-MBDirectionsProfileIdentifier const MBDirectionsProfileIdentifierWalking                    = @"mapbox/walking";
+MBDirectionsProfileIdentifier const MBDirectionsProfileIdentifierAutomobile                 = @"driving";
+MBDirectionsProfileIdentifier const MBDirectionsProfileIdentifierAutomobileAvoidingTraffic  = @"driving-traffic";
+MBDirectionsProfileIdentifier const MBDirectionsProfileIdentifierCycling                    = @"cycling";
+MBDirectionsProfileIdentifier const MBDirectionsProfileIdentifierWalking                    = @"walking";
+MBDirectionsProfileIdentifier const MBDirectionsProfileIdentifierWalking                    = @"walking";
+MBDirectionsProfileIdentifier const MBDirectionsProfileIdentifierCar                    = @"car";
+MBDirectionsProfileIdentifier const MBDirectionsProfileIdentifierMoto                    = @"moto";

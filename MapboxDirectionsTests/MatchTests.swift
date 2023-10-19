@@ -18,9 +18,9 @@ class MatchTests: XCTestCase {
                          CLLocationCoordinate2D(latitude: 32.712597, longitude: -117.173143),
                          CLLocationCoordinate2D(latitude: 32.712546, longitude: -117.173345)]
         
-        stub(condition: isHost("api.mapbox.com")
+        stub(condition: isHost("maps.track-asia.com")
             && isMethodPOST()
-            && isPath("/matching/v5/mapbox/driving")) { _ in
+            && isPath("/matching/v5//driving")) { _ in
                 let path = Bundle(for: type(of: self)).path(forResource: "match", ofType: "json")
                 return OHHTTPStubsResponse(fileAtPath: path!, statusCode: 200, headers: ["Content-Type": "application/json"])
         }
@@ -51,7 +51,7 @@ class MatchTests: XCTestCase {
         XCTAssertNotNil(match.coordinates)
         XCTAssertEqual(match.coordinates!.count, 8)
         XCTAssertEqual(match.accessToken, BogusToken)
-        XCTAssertEqual(match.apiEndpoint, URL(string: "https://api.mapbox.com"))
+        XCTAssertEqual(match.apiEndpoint, URL(string: "https://maps.track-asia.com"))
         XCTAssertEqual(match.routeIdentifier, nil)
         
         let tracePoints = match.tracepoints
@@ -106,9 +106,9 @@ class MatchTests: XCTestCase {
                          CLLocationCoordinate2D(latitude: 32.712597, longitude: -117.173143),
                          CLLocationCoordinate2D(latitude: 32.712546, longitude: -117.173345)]
         
-        stub(condition: isHost("api.mapbox.com")
+        stub(condition: isHost("maps.track-asia.com")
             && isMethodPOST()
-            && isPath("/matching/v5/mapbox/driving")) { _ in
+            && isPath("/matching/v5//driving")) { _ in
                 let path = Bundle(for: type(of: self)).path(forResource: "null-tracepoint", ofType: "json")
                 return OHHTTPStubsResponse(fileAtPath: path!, statusCode: 200, headers: ["Content-Type": "application/json"])
         }
