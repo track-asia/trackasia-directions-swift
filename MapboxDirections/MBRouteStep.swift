@@ -92,6 +92,8 @@ public enum TransportType: Int, CustomStringConvertible {
             type = .train
         case "car":
             type = .car
+        case "moto":
+            type = .moto
         default:
             return nil
         }
@@ -118,6 +120,8 @@ public enum TransportType: Int, CustomStringConvertible {
             return "train"
         case .car:
             return "car"
+        case .moto:
+            return "moto"
         }
         
     }

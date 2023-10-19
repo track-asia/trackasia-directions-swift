@@ -5,6 +5,5 @@ MBDirectionsProfileIdentifier const MBDirectionsProfileIdentifierAutomobile     
 MBDirectionsProfileIdentifier const MBDirectionsProfileIdentifierAutomobileAvoidingTraffic  = @"driving-traffic";
 MBDirectionsProfileIdentifier const MBDirectionsProfileIdentifierCycling                    = @"cycling";
 MBDirectionsProfileIdentifier const MBDirectionsProfileIdentifierWalking                    = @"walking";
-MBDirectionsProfileIdentifier const MBDirectionsProfileIdentifierWalking                    = @"walking";
 MBDirectionsProfileIdentifier const MBDirectionsProfileIdentifierCar                    = @"car";
 MBDirectionsProfileIdentifier const MBDirectionsProfileIdentifierMoto                    = @"moto";
