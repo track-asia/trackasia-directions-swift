@@ -1,91 +1,95 @@
-# Mapbox Directions for Swift
+# MaplibreDirections
 
-[![CircleCI](https://circleci.com/gh/track-asia/trackasia-directions-swift.svg?style=svg)](https://circleci.com/gh/track-asia/trackasia-directions-swift)
-[![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
-[![CocoaPods](https://img.shields.io/cocoapods/v/MapboxDirections.svg)](https://cocoapods.org/pods/MapboxDirections/)
-[![SPM compatible](https://img.shields.io/badge/SPM-compatible-4BC51D.svg?style=flat)](https://swift.org/package-manager/)
-[![codecov](https://codecov.io/gh/track-asia/trackasia-directions-swift/branch/main/graph/badge.svg?token=bjr4ASuXuO)](https://codecov.io/gh/track-asia/trackasia-directions-swift)
+The MaplibreDirections SDK for iOS is built on a for of the MapboxDirections SDK v.023.
 
-Mapbox Directions for Swift (formerly MapboxDirections.swift) makes it easy to connect your iOS, macOS, tvOS, watchOS, or Linux application to the [Mapbox Directions](https://docs.mapbox.com/api/navigation/) and [Map Matching](https://docs.mapbox.com/api/navigation/#map-matching) APIs. Quickly get driving, cycling, or walking directions, whether the trip is nonstop or it has multiple stopping points, all using a simple interface reminiscent of MapKit’s `MKDirections` API. Fit a GPX trace to the [OpenStreetMap](https://www.openstreetmap.org/) road network. The Mapbox Directions and Map Matching APIs are powered by the [OSRM](http://project-osrm.org/) and [Valhalla](https://github.com/valhalla/valhalla/) routing engines. For more information, see the [Mapbox Navigation](https://www.mapbox.com/navigation/) homepage.
+MapboxDirections.swift makes it easy to connect your iOS, macOS, tvOS, or watchOS application to the [Mapbox Directions API](https://www.mapbox.com/directions/) and [Mapbox Map Matching API](https://www.mapbox.com/directions/). Quickly get driving, cycling, or walking directions, whether the trip is nonstop or it has multiple stopping points, all using a simple interface reminiscent of MapKit’s `MKDirections` API. Fit a GPX trace to the [OpenStreetMap](https://www.openstreetmap.org/) road network. The Mapbox Directions and Map Matching APIs are powered by the [OSRM](http://project-osrm.org/) routing engine.
 
-Mapbox Directions pairs well with [MapboxGeocoder.swift](https://github.com/mapbox/MapboxGeocoder.swift), [MapboxStatic.swift](https://github.com/mapbox/MapboxStatic.swift), the [Mapbox Navigation SDK for iOS](https://github.com/mapbox/mapbox-navigation-ios/), and the [Mapbox Maps SDK for iOS](https://docs.mapbox.com/ios/maps/) or [macOS SDK](https://mapbox.github.io/mapbox-gl-native/macos/).
+Despite its name, MapboxDirections.swift works in Objective-C and Cocoa-AppleScript code in addition to Swift 4.
+
+MapboxDirections.swift pairs well with [MapboxGeocoder.swift](https://github.com/mapbox/MapboxGeocoder.swift), [MapboxStatic.swift](https://github.com/mapbox/MapboxStatic.swift), the [Mapbox Navigation SDK for iOS](https://github.com/mapbox/mapbox-navigation-ios/), and the [Mapbox Maps SDK for iOS](https://www.mapbox.com/ios-sdk/) or [macOS SDK](https://mapbox.github.io/mapbox-gl-native/macos/).
+
+# Why have we forked
+
+1. We wanted to upgrade the SDK from iOS 9.0 to 12.0.
+
+# What have we changed
+
+- Upgrade iOS version from 9.0 to 12.0.
+- Upgraded Polyline SDK from v4.2.0 to v5.1.0. 
+- Removed private cartfile.
 
 ## Getting started
+
+If you are looking to include this inside your project, you have to follow the the following steps:
 
 Specify the following dependency in your [Carthage](https://github.com/Carthage/Carthage) Cartfile:
 
 ```cartfile
-# Latest stable release
-github "track-asia/trackasia-directions-swift" ~> 2.11
-# Latest prerelease
-github "track-asia/trackasia-directions-swift" "v2.11.0-rc.1"
+github "mapbox/MapboxDirections.swift" ~> 0.23
 ```
 
 Or in your [CocoaPods](http://cocoapods.org/) Podfile:
 
 ```podspec
-# Latest stable release
-pod 'MapboxDirections', '~> 2.11'
-# Latest prerelease
-pod 'MapboxDirections', :git => 'https://github.com/track-asia/trackasia-directions-swift.git', :tag => 'v2.11.0-rc.1'
+pod 'MapboxDirections.swift', '~> 0.23'
 ```
 
-Or in your [Swift Package Manager](https://swift.org/package-manager/) Package.swift:
+Then `import MapboxDirections` or `@import MapboxDirections;`.
 
-```swift
-// Latest stable release
-.package(name: "MapboxDirections", url: "https://github.com/track-asia/trackasia-directions-swift.git", from: "2.11.0")
-// Latest prerelease
-.package(name: "MapboxDirections", url: "https://github.com/track-asia/trackasia-directions-swift.git", .exact("2.11.0-rc.1"))
-```
+v0.12.1 is the last release of MapboxDirections.swift written in Swift 3. All subsequent releases will be based on the `master` branch, which is written in Swift 4. The Swift examples below are written in Swift 4.
 
-Then `import MapboxDirections`.
-
-This repository contains an example application that demonstrates how to use the framework. To run it, you need to use [Carthage](https://github.com/Carthage/Carthage) 0.19 or above to install the dependencies. Detailed documentation is available in the [Mapbox API Documentation](https://docs.mapbox.com/api/navigation/#directions).
-
-## System requirements
-
-* One of the following package managers:
-   * CocoaPods 1.10 or above
-   * Carthage 0.38 or above
-   * Swift Package Manager 5.5 or above
-* Xcode 13 or above
-* One of the following operating systems:
-   * iOS 12.0 or above
-   * macOS 10.14 or above
-   * tvOS 12.0 or above
-   * watchOS 5.0 or above
-   * Any Linux distribution supported by Swift
-
-v0.30.0 is the last release of MapboxDirections.swift that supports a minimum deployment target of iOS 9._x_, macOS 10.11._x_, tvOS 9._x_, or watchOS 2._x_. v0.30.0 is also the last release that is compatible with Objective-C or AppleScript code.
+This repository contains example applications written in Swift and Objective-C that demonstrate how to use the framework. To run them, you need to use [Carthage](https://github.com/Carthage/Carthage) 0.19 or above to install the dependencies. More examples and detailed documentation are available in the [Mapbox API Documentation](https://www.mapbox.com/api-documentation/?language=Swift#directions).
 
 ## Usage
 
-**[API reference](https://docs.mapbox.com/ios/api/directions/)**
+**[API reference](https://www.mapbox.com/mapbox-navigation-ios/directions/)**
 
-You’ll need a [Mapbox access token](https://docs.mapbox.com/api/#access-tokens-and-token-scopes) in order to use the API. If you’re already using the [Mapbox Maps SDK for iOS](https://docs.mapbox.com/ios/maps/) or [macOS SDK](https://mapbox.github.io/mapbox-gl-native/macos/), Mapbox Directions automatically recognizes your access token, as long as you’ve placed it in the `MBXAccessToken` key of your application’s Info.plist file.
+You’ll need a [Mapbox access token](https://www.mapbox.com/developers/api/#access-tokens) in order to use the API. If you’re already using the [Mapbox Maps SDK for iOS](https://www.mapbox.com/ios-sdk/) or [macOS SDK](https://mapbox.github.io/mapbox-gl-native/macos/), MapboxDirections.swift automatically recognizes your access token, as long as you’ve placed it in the `MGLMapboxAccessToken` key of your application’s Info.plist file.
 
-The examples below are each provided in Swift (denoted with `main.swift`). For further details, see the documentation available by the link in the [releases](https://github.com/track-asia/trackasia-directions-swift/releases).
+The examples below are each provided in Swift (denoted with `main.swift`), Objective-C (`main.m`), and AppleScript (`AppDelegate.applescript`). For further details, see the [MapboxDirections.swift API reference](https://www.mapbox.com/mapbox-navigation-ios/directions/).
 
 ### Calculating directions between locations
 
-The main directions class is `Directions`. Create a directions object using your access token:
+The main directions class is Directions (in Swift) or MBDirections (in Objective-C or AppleScript). Create a directions object using your access token:
 
 ```swift
 // main.swift
 import MapboxDirections
 
-let directions = Directions(credentials: Credentials(accessToken: "<#your access token#>"))
+let directions = Directions(accessToken: "<#your access token#>")
 ```
 
-Alternatively, you can place your access token in the `MBXAccessToken` key of your application’s Info.plist file, then use the shared directions object:
+```objc
+// main.m
+@import MapboxDirections;
+
+MBDirections *directions = [[MBDirections alloc] initWithAccessToken:@"<#your access token#>"];
+```
+
+```applescript
+-- AppDelegate.applescript
+set theDirections to alloc of MBDirections of the current application
+tell theDirections to initWithAccessToken:"<#your access token#>"
+```
+
+Alternatively, you can place your access token in the `MGLMapboxAccessToken` key of your application’s Info.plist file, then use the shared directions object:
 
 ```swift
 // main.swift
 let directions = Directions.shared
 ```
 
-With the directions object in hand, construct a RouteOptions object and pass it into the `Directions.calculate(_:completionHandler:)` method.
+```objc
+// main.m
+MBDirections *directions = [MBDirections sharedDirections];
+```
+
+```applescript
+-- AppDelegate.applescript
+set theDirections to sharedDirections of MBDirections of the current application
+```
+
+With the directions object in hand, construct a RouteOptions or MBRouteOptions object and pass it into the `Directions.calculate(_:completionHandler:)` method.
 
 ```swift
 // main.swift
@@ -97,15 +101,13 @@ let waypoints = [
 let options = RouteOptions(waypoints: waypoints, profileIdentifier: .automobileAvoidingTraffic)
 options.includesSteps = true
 
-let task = directions.calculate(options) { (session, result) in
-    switch result {
-    case .failure(let error):
-        print("Error calculating directions: \(error)")
-    case .success(let response):
-        guard let route = response.routes?.first, let leg = route.legs.first else {
-            return
-        }
+let task = directions.calculate(options) { (waypoints, routes, error) in
+    guard error == nil else {
+        print("Error calculating directions: \(error!)")
+        return
+    }
 
+    if let route = routes?.first, let leg = route.legs.first {
         print("Route via \(leg):")
 
         let distanceFormatter = LengthFormatter()
@@ -126,7 +128,86 @@ let task = directions.calculate(options) { (session, result) in
 }
 ```
 
-This library uses version 5 of the Mapbox Directions API by default.
+```objc
+// main.m
+
+NSArray<MBWaypoint *> *waypoints = @[
+    [[MBWaypoint alloc] initWithCoordinate:CLLocationCoordinate2DMake(38.9131752, -77.0324047) coordinateAccuracy:-1 name:@"Mapbox"],
+    [[MBWaypoint alloc] initWithCoordinate:CLLocationCoordinate2DMake(38.8977, -77.0365) coordinateAccuracy:-1 name:@"White House"],
+];
+MBRouteOptions *options = [[MBRouteOptions alloc] initWithWaypoints:waypoints
+                                                  profileIdentifier:MBDirectionsProfileIdentifierAutomobileAvoidingTraffic];
+options.includesSteps = YES;
+
+NSURLSessionDataTask *task = [directions calculateDirectionsWithOptions:options
+                                                      completionHandler:^(NSArray<MBWaypoint *> * _Nullable waypoints,
+                                                                          NSArray<MBRoute *> * _Nullable routes,
+                                                                          NSError * _Nullable error) {
+    if (error) {
+        NSLog(@"Error calculating directions: %@", error);
+        return;
+    }
+
+    MBRoute *route = routes.firstObject;
+    MBRouteLeg *leg = route.legs.firstObject;
+    if (leg) {
+        NSLog(@"Route via %@:", leg);
+
+        NSLengthFormatter *distanceFormatter = [[NSLengthFormatter alloc] init];
+        NSString *formattedDistance = [distanceFormatter stringFromMeters:leg.distance];
+
+        NSDateComponentsFormatter *travelTimeFormatter = [[NSDateComponentsFormatter alloc] init];
+        travelTimeFormatter.unitsStyle = NSDateComponentsFormatterUnitsStyleShort;
+        NSString *formattedTravelTime = [travelTimeFormatter stringFromTimeInterval:route.expectedTravelTime];
+
+        NSLog(@"Distance: %@; ETA: %@", formattedDistance, formattedTravelTime);
+
+        for (MBRouteStep *step in leg.steps) {
+            NSLog(@"%@", step.instructions);
+            NSString *formattedDistance = [distanceFormatter stringFromMeters:step.distance];
+            NSLog(@"— %@ —", formattedDistance);
+        }
+    }
+}];
+```
+
+```applescript
+-- AppDelegate.applescript
+
+set mapbox to alloc of MBWaypoint of the current application
+tell mapbox to initWithCoordinate:{38.9131752, -77.0324047} coordinateAccuracy:-1 |name|:"Mapbox"
+set theWhiteHouse to alloc of MBWaypoint of the current application
+tell theWhiteHouse to initWithCoordinate:{38.8977, -77.0365} coordinateAccuracy:-1 |name|:"White House"
+set theWaypoints to {mapbox, theWhiteHouse}
+
+set theOptions to alloc of MBRouteOptions of the current application
+tell theOptions to initWithWaypoints:theWaypoints profileIdentifier:"mapbox/driving-traffic"
+set theOptions's includesSteps to true
+
+set theURL to theDirections's URLForCalculatingDirectionsWithOptions:theOptions
+set theData to the current application's NSData's dataWithContentsOfURL:theURL
+set theJSON to the current application's NSJSONSerialization's JSONObjectWithData:theData options:0 |error|:(missing value)
+
+set theRoute to alloc of MBRoute of the current application
+tell theRoute to initWithJson:(the first item of theJSON's routes) waypoints:theWaypoints profileIdentifier:"mapbox/driving"
+set theLeg to the first item of theRoute's legs
+
+log "Route via " & theLeg's |name| & ":"
+
+set theDistanceFormatter to alloc of NSLengthFormatter of the current application
+tell theDistanceFormatter to init()
+set theDistance to theDistanceFormatter's stringFromMeters:(theLeg's distance)
+
+log "Distance: " & theDistance
+
+repeat with theStep in theLeg's steps
+    log theStep's instructions
+    set theDistance to theDistanceFormatter's stringFromMeters:(theStep's distance)
+    log "— " & theDistance & " —"
+end repeat
+```
+
+This library uses version 5 of the Mapbox Directions API by default. To use version 4 instead, replace RouteOptions with RouteOptionsV4 (or MBRouteOptions with MBRouteOptionsV4).
 
 ### Matching a trace to the road network
 
@@ -148,15 +229,13 @@ let coordinates = [
 let options = MatchOptions(coordinates: coordinates)
 options.includesSteps = true
 
-let task = directions.calculate(options) { (session, result) in
-    switch result {
-    case .failure(let error):
-        print("Error matching coordinates: \(error)")
-    case .success(let response):
-        guard let match = response.matches?.first, let leg = match.legs.first else {
-            return
-        }
+let task = directions.calculate(options) { (matches, error) in
+    guard error == nil else {
+        print("Error matching coordinates: \(error!)")
+        return
+    }
 
+    if let match = matches?.first, let leg = match.legs.first {
         print("Match via \(leg):")
 
         let distanceFormatter = LengthFormatter()
@@ -177,133 +256,98 @@ let task = directions.calculate(options) { (session, result) in
 }
 ```
 
-You can also use the `Directions.calculateRoutes(matching:completionHandler:)` method to get Route objects suitable for use anywhere a standard Directions API response would be used.
+```objc
+// main.m
+NSArray<MBWaypoint *> *waypoints = @[
+    [[MBWaypoint alloc] initWithCoordinate:CLLocationCoordinate2DMake(32.712041, -117.172836) coordinateAccuracy:-1 name:nil],
+    [[MBWaypoint alloc] initWithCoordinate:CLLocationCoordinate2DMake(32.712256, -117.17291) coordinateAccuracy:-1 name:nil],
+    [[MBWaypoint alloc] initWithCoordinate:CLLocationCoordinate2DMake(32.712444, -117.17292) coordinateAccuracy:-1 name:nil],
+    [[MBWaypoint alloc] initWithCoordinate:CLLocationCoordinate2DMake(32.71257, -117.172922) coordinateAccuracy:-1 name:nil],
+    [[MBWaypoint alloc] initWithCoordinate:CLLocationCoordinate2DMake(32.7126, -117.172985) coordinateAccuracy:-1 name:nil],
+    [[MBWaypoint alloc] initWithCoordinate:CLLocationCoordinate2DMake(32.712597, -117.173143) coordinateAccuracy:-1 name:nil],
+    [[MBWaypoint alloc] initWithCoordinate:CLLocationCoordinate2DMake(32.712546, -117.173345) coordinateAccuracy:-1 name:nil],
+];
 
-### Build an isochrone map
-
-Tell the user how far they can travel within certain distances or times of a given location using the Isochrone API. `Isochrones` uses the same access token initialization as `Directions`. Once that is configured, you need to fill `IsochronesOptions` parameters to calculate the desired GeoJSON:
-
-```swift
-let isochrones = Isochrones(credentials: Credentials(accessToken: "<#your access token#>"))
-
-let isochroneOptions = IsochroneOptions(centerCoordinate: CLLocationCoordinate2D(latitude: 45.52, longitude: -122.681944),
-                                        contours: .byDistances([
-                                            .init(value: 500, unit: .meters,     color: .orange),
-                                            .init(value: 1,   unit: .kilometers, color: .red)
-                                        ]))
-
-isochrones.calculate(isochroneOptions) { session, result in
-    if case .success(let response) = result {
-         print(response)
+MBMatchOptions *matchOptions = [[MBMatchOptions alloc] initWithWaypoints:waypoints profileIdentifier:MBDirectionsProfileIdentifierAutomobile];
+NSURLSessionDataTask *task = [[[MBDirections alloc] initWithAccessToken:MapboxAccessToken] calculateMatchesWithOptions:matchOptions completionHandler:^(NSArray<MBMatch *> * _Nullable matches, NSError * _Nullable error) {
+    if (error) {
+        NSLog(@"Error matching waypoints: %@", error);
+        return;
     }
-}
+    
+    MBMatch *match = matches.firstObject;
+    MBRouteLeg *leg = match.legs.firstObject;
+    if (leg) {
+        NSLog(@"Match via %@:", leg);
+        
+        NSLengthFormatter *distanceFormatter = [[NSLengthFormatter alloc] init];
+        NSString *formattedDistance = [distanceFormatter stringFromMeters:leg.distance];
+        
+        NSDateComponentsFormatter *travelTimeFormatter = [[NSDateComponentsFormatter alloc] init];
+        travelTimeFormatter.unitsStyle = NSDateComponentsFormatterUnitsStyleShort;
+        NSString *formattedTravelTime = [travelTimeFormatter stringFromTimeInterval:match.expectedTravelTime];
+        
+        NSLog(@"Distance: %@; ETA: %@", formattedDistance, formattedTravelTime);
+        
+        for (MBRouteStep *step in leg.steps) {
+            NSLog(@"%@", step.instructions);
+            NSString *formattedDistance = [distanceFormatter stringFromMeters:step.distance];
+            NSLog(@"— %@ —", formattedDistance);
+        }
+    }
+}];
 ```
 
-### Retrieve a distance or duration matrix
-
-See the travel times or distances between many points using the Matrix API. `Matrix` uses the same access token initialization as `Directions`. Once that is configured, you need to fill  `MatrixOptions` parameters to calculate the desired matrix:
-
-``` swift
-let matrix = Matrix(credentials: Credentials(accessToken: "<#your access token#>")
-let waypoints = [
-    Waypoint(coordinate: CLLocationCoordinate2D(latitude: 37.751668, longitude: -122.418408), name: "Mission Street"),
-    Waypoint(coordinate: CLLocationCoordinate2D(latitude: 37.755184, longitude: -122.422959), name: "22nd Street"),
-    Waypoint(coordinate: CLLocationCoordinate2D(latitude: 37.759695, longitude: -122.426911))
-]
-let matrixOptions = MatrixOptions(sources: waypoints, destinations: waypoints, profileIdentifier: .automobile)
-matrix.calculate(matrixOptions) { session, result in
-    if case .success(let response) = result,
-       let expectedTravelTime = response.travelTime(from: 0, to: 1) {
-        print("Expected route duration from '\(waypoints[0].name)' to '\(waypoints[1].name)' is \(expectedTravelTime / 60) minutes.")
-    }
-}
-```
+You can also use the `Directions.calculateRoutes(matching:completionHandler:)` method in Swift or the `-[MBDirections calculateRoutesMatchingOptions:completionHandler:]` method in Objective-C to get Route objects suitable for use anywhere a standard Directions API response would be used.
 
 ## Usage with other Mapbox libraries
 
 ### Drawing the route on a map
 
-With the [Mapbox Maps SDK for iOS](https://docs.mapbox.com/ios/maps/) or [macOS SDK](https://mapbox.github.io/mapbox-gl-native/macos/), you can easily draw the route on a map:
+With the [Mapbox Maps SDK for iOS](https://www.mapbox.com/ios-sdk/) or [macOS SDK](https://mapbox.github.io/mapbox-gl-native/macos/), you can easily draw the route on a map in Swift or Objective-C:
 
 ```swift
 // main.swift
 
-if var routeCoordinates = route.shape?.coordinates, routeCoordinates.count > 0 {
+if route.coordinateCount > 0 {
     // Convert the route’s coordinates into a polyline.
-    let routeLine = MGLPolyline(coordinates: &routeCoordinates, count: UInt(routeCoordinates.count))
+    var routeCoordinates = route.coordinates!
+    let routeLine = MGLPolyline(coordinates: &routeCoordinates, count: route.coordinateCount)
 
-    // Add the polyline to the map.
+    // Add the polyline to the map and fit the viewport to the polyline.
     mapView.addAnnotation(routeLine)
+    mapView.setVisibleCoordinates(&routeCoordinates, count: route.coordinateCount, edgePadding: .zero, animated: true)
+}
+```
 
-    // Fit the viewport to the polyline.
-    let camera = mapView.cameraThatFitsShape(routeLine, direction: 0, edgePadding: .zero)
-    mapView.setCamera(camera, animated: true)
+```objc
+// main.m
+
+if (route.coordinateCount) {
+    // Convert the route’s coordinates into a polyline.
+    CLLocationCoordinate2D *routeCoordinates = malloc(route.coordinateCount * sizeof(CLLocationCoordinate2D));
+    [route getCoordinates:routeCoordinates];
+    MGLPolyline *routeLine = [MGLPolyline polylineWithCoordinates:routeCoordinates count:route.coordinateCount];
+
+    // Add the polyline to the map and fit the viewport to the polyline.
+    [mapView addAnnotation:routeLine];
+    [mapView setVisibleCoordinates:routeCoordinates count:route.coordinateCount edgePadding:UIEdgeInsetsZero animated:YES];
+
+    // Make sure to free this array to avoid leaking memory.
+    free(routeCoordinates);
 }
 ```
 
 ### Displaying a turn-by-turn navigation interface
 
-The [Mapbox Navigation SDK for iOS](https://github.com/mapbox/mapbox-navigation-ios/) provides a full-fledged user interface for turn-by-turn navigation along routes supplied by MapboxDirections.
+See the [Mapbox Navigation SDK for iOS](https://github.com/mapbox/mapbox-navigation-ios/#usage) documentation for usage examples.
 
-### Drawing Isochrones contours on a map snapshot
+## Tests
 
-[MapboxStatic.swift](https://github.com/mapbox/MapboxStatic.swift) provides an easy way to draw a isochrone contours on a map.
+To run the included unit tests, you need to use [Carthage](https://github.com/Carthage/Carthage) 0.19 or above to install the dependencies.
 
-```swift
-// main.swift
-import MapboxStatic
-import MapboxDirections
+1. `carthage build --platform iOS`
+1. `open MapboxDirections.xcodeproj`
+1. Go to Product ‣ Test.
 
-let centerCoordinate = CLLocationCoordinate2D(latitude: 45.52, longitude: -122.681944)
-let accessToken = "<#your access token#>"
-
-// Setup snapshot parameters
-let camera = SnapshotCamera(
-    lookingAtCenter: centerCoordinate,
-    zoomLevel: 12)
-let options = SnapshotOptions(
-    styleURL: URL(string: "<#your mapbox: style URL#>")!,
-    camera: camera,
-    size: CGSize(width: 200, height: 200))
-
-// Request Isochrone contour to draw on a map
-let isochrones = Isochrones(credentials: Credentials(accessToken: accessToken))
-isochrones.calculate(IsochroneOptions(centerCoordinate: centerCoordinate,
-                                      contours: .byDistances([.init(value: 500, unit: .meters)]))) { session, result in
-    if case .success(let response) = result {
-        // Serialize the geoJSON
-        let encoder = JSONEncoder()
-        let data = try! encoder.encode(response)
-        let geoJSONString = String(data: data, encoding: .utf8)!
-        let geoJSONOverlay = GeoJSON(objectString: geoJSONString)
-
-        // Feed resulting geoJSON to snapshot options
-        options.overlays.append(geoJSONOverlay)
-
-        let snapshot = Snapshot(
-            options: options,
-            accessToken: accessToken)
-
-        // Display the result!
-        drawImage(snapshot.image)
-    }
-}
-```
-
-## Directions CLI
-
-`MapboxDirectionsCLI` is a command line tool, designed to round-trip an arbitrary, JSON-formatted Directions or Map Matching API response through model objects and back to JSON. This is useful for various scenarios including testing purposes and designing more sophisticated API response processing pipelines. It is supplied as a Swift package.
-
-To build `MapboxDirectionsCLI` using SPM:
-
-1. `swift build`
-
-To run (and build if it wasn't yet) `MapboxDirectionsCLI` and see usage:
-
-1. `swift run mapbox-directions-swift -h`
-
-For further details, see the [MapboxDirectionsCLI documentation](CommandLineTool.md).
-
-## Pricing
-
-API calls made to the Directions API are individually billed by request. Review the [pricing information](https://docs.mapbox.com/api/navigation/directions/#directions-api-pricing) and the [pricing page](https://www.mapbox.com/pricing/#directions) for current rates.
+Copyright (c) 2023 MapLibre contributors

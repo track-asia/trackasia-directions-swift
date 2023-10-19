@@ -1,0 +1,14 @@
+{
+  "pins" : [
+    {
+      "identity" : "trackasia-gl-native-distribution",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/track-asia/trackasia-gl-native-distribution",
+      "state" : {
+        "revision" : "2f88528771e1f088fa21e5854152cffe06de5ea2",
+        "version" : "1.0.1"
+      }
+    }
+  ],
+  "version" : 2
+}
