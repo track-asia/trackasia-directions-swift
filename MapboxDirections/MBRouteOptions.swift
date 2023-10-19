@@ -154,6 +154,7 @@ open class RouteOptions: DirectionsOptions {
      */
     internal func response(from json: JSONDictionary) -> ([Waypoint]?, [Route]?) {
         var namedWaypoints: [Waypoint]?
+        print(json)
         if let jsonWaypoints = (json["waypoints"] as? [JSONDictionary]) {
             namedWaypoints = zip(jsonWaypoints, self.waypoints).map { (api, local) -> Waypoint in
                 let location = api["location"] as! [Double]

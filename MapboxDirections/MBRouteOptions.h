@@ -36,3 +36,7 @@ extern MBDirectionsProfileIdentifier const MBDirectionsProfileIdentifierCycling;
  This profile prioritizes short routes, making use of sidewalks and trails where available. A walking route may use other modes of transportation, such as ferries or trains, where necessary.
  */
 extern MBDirectionsProfileIdentifier const MBDirectionsProfileIdentifierWalking;
+
+extern MBDirectionsProfileIdentifier const MBDirectionsProfileIdentifierCar;
+
+extern MBDirectionsProfileIdentifier const MBDirectionsProfileIdentifierMoto;
