@@ -434,48 +434,48 @@ open class DirectionsOptions: NSObject, NSSecureCoding, NSCopying {
             URLQueryItem(name: "geometries", value: String(describing: shapeFormat)),
             URLQueryItem(name: "overview", value: String(describing: routeShapeResolution)),
             URLQueryItem(name: "steps", value: String(includesSteps)),
-            URLQueryItem(name: "language", value: locale.identifier)
+            // URLQueryItem(name: "language", value: locale.identifier)
         ]
         
-        let mustArriveOnDrivingSide = !waypoints.filter { !$0.allowsArrivingOnOppositeSide }.isEmpty
-        if mustArriveOnDrivingSide {
-            let approaches = waypoints.map { $0.allowsArrivingOnOppositeSide ? "unrestricted" : "curb" }
-            params.append(URLQueryItem(name: "approaches", value: approaches.joined(separator: ";")))
-        }
+        // let mustArriveOnDrivingSide = !waypoints.filter { !$0.allowsArrivingOnOppositeSide }.isEmpty
+        // if mustArriveOnDrivingSide {
+        //     let approaches = waypoints.map { $0.allowsArrivingOnOppositeSide ? "unrestricted" : "curb" }
+        //     params.append(URLQueryItem(name: "approaches", value: approaches.joined(separator: ";")))
+        // }
         
-        if includesSpokenInstructions {
-            params.append(URLQueryItem(name: "voice_instructions", value: String(includesSpokenInstructions)))
-            params.append(URLQueryItem(name: "voice_units", value: String(describing: distanceMeasurementSystem)))
-        }
+        // if includesSpokenInstructions {
+        //     params.append(URLQueryItem(name: "voice_instructions", value: String(includesSpokenInstructions)))
+        //     params.append(URLQueryItem(name: "voice_units", value: String(describing: distanceMeasurementSystem)))
+        // }
         
-        if includesVisualInstructions {
-            params.append(URLQueryItem(name: "banner_instructions", value: String(includesVisualInstructions)))
-        }
+        // if includesVisualInstructions {
+        //     params.append(URLQueryItem(name: "banner_instructions", value: String(includesVisualInstructions)))
+        // }
         
-        // Include headings and heading accuracies if any waypoint has a nonnegative heading.
-        if !waypoints.filter({ $0.heading >= 0 }).isEmpty {
-            let headings = waypoints.map { $0.headingDescription }.joined(separator: ";")
-            params.append(URLQueryItem(name: "bearings", value: headings))
-        }
+        // // Include headings and heading accuracies if any waypoint has a nonnegative heading.
+        // if !waypoints.filter({ $0.heading >= 0 }).isEmpty {
+        //     let headings = waypoints.map { $0.headingDescription }.joined(separator: ";")
+        //     params.append(URLQueryItem(name: "bearings", value: headings))
+        // }
         
         // Include location accuracies if any waypoint has a nonnegative coordinate accuracy.
-        if !waypoints.filter({ $0.coordinateAccuracy >= 0 }).isEmpty {
-            let accuracies = waypoints.map {
-                $0.coordinateAccuracy >= 0 ? String($0.coordinateAccuracy) : "unlimited"
-                }.joined(separator: ";")
-            params.append(URLQueryItem(name: "radiuses", value: accuracies))
-        }
+        // if !waypoints.filter({ $0.coordinateAccuracy >= 0 }).isEmpty {
+        //     let accuracies = waypoints.map {
+        //         $0.coordinateAccuracy >= 0 ? String($0.coordinateAccuracy) : "unlimited"
+        //         }.joined(separator: ";")
+        //     params.append(URLQueryItem(name: "radiuses", value: accuracies))
+        // }
         
-        if !attributeOptions.isEmpty {
-            let attributesStrings = String(describing:attributeOptions)
+        // if !attributeOptions.isEmpty {
+        //     let attributesStrings = String(describing:attributeOptions)
             
-            params.append(URLQueryItem(name: "annotations", value: attributesStrings))
-        }
+        //     params.append(URLQueryItem(name: "annotations", value: attributesStrings))
+        // }
         
-        if !waypoints.compactMap({ $0.name }).isEmpty {
-            let names = waypoints.map { $0.name ?? "" }.joined(separator: ";")
-            params.append(URLQueryItem(name: "waypoint_names", value: names))
-        }
+        // if !waypoints.compactMap({ $0.name }).isEmpty {
+        //     let names = waypoints.map { $0.name ?? "" }.joined(separator: ";")
+        //     params.append(URLQueryItem(name: "waypoint_names", value: names))
+        // }
         
         return params
     }

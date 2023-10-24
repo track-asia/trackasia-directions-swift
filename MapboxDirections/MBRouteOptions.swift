@@ -124,24 +124,24 @@ open class RouteOptions: DirectionsOptions {
     internal override var params: [URLQueryItem] {
         var params = super.params
         
-        params.append(contentsOf: [
-            URLQueryItem(name: "alternatives", value: String(includesAlternativeRoutes)),
-            URLQueryItem(name: "continue_straight", value: String(!allowsUTurnAtWaypoint))
-        ])
+        // params.append(contentsOf: [
+        //     URLQueryItem(name: "alternatives", value: String(includesAlternativeRoutes)),
+        //     URLQueryItem(name: "continue_straight", value: String(!allowsUTurnAtWaypoint))
+        // ])
 
-        if includesExitRoundaboutManeuver {
-            params.append(URLQueryItem(name: "roundabout_exits", value: String(includesExitRoundaboutManeuver)))
-        }
+        // if includesExitRoundaboutManeuver {
+        //     params.append(URLQueryItem(name: "roundabout_exits", value: String(includesExitRoundaboutManeuver)))
+        // }
         
-        if !roadClassesToAvoid.isEmpty {
-            let allRoadClasses = roadClassesToAvoid.description.components(separatedBy: ",")
-            if allRoadClasses.count > 1 {
-                assert(false, "`roadClassesToAvoid` only accepts one `RoadClasses`.")
-            }
-            if let firstRoadClass = allRoadClasses.first {
-                params.append(URLQueryItem(name: "exclude", value: firstRoadClass))
-            }
-        }
+        // if !roadClassesToAvoid.isEmpty {
+        //     let allRoadClasses = roadClassesToAvoid.description.components(separatedBy: ",")
+        //     if allRoadClasses.count > 1 {
+        //         assert(false, "`roadClassesToAvoid` only accepts one `RoadClasses`.")
+        //     }
+        //     if let firstRoadClass = allRoadClasses.first {
+        //         params.append(URLQueryItem(name: "exclude", value: firstRoadClass))
+        //     }
+        // }
 
         return params
     }

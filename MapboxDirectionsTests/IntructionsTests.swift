@@ -16,12 +16,12 @@ class SpokenInstructionsTests: XCTestCase {
             "geometries": "polyline",
             "overview": "full",
             "steps": "true",
-            "continue_straight": "true",
-            "access_token": BogusToken,
-            "voice_instructions": "true",
-            "voice_units": "imperial",
-            "banner_instructions": "true",
-            "waypoint_names": "the hotel;the gym"
+            // "continue_straight": "true",
+            "key": "public",
+            // "voice_instructions": "true",
+            // "voice_units": "imperial",
+            // "banner_instructions": "true",
+            // "waypoint_names": "the hotel;the gym"
         ]
         
         stub(condition: isHost("maps.track-asia.com")

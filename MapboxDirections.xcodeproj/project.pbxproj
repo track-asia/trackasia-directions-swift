@@ -31,8 +31,7 @@
 		8D381B6D1FDB3D8B008D5A58 /* String.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D381B691FDB101F008D5A58 /* String.swift */; };
 		99695DB22AE061700016B000 /* Polyline.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 99695DB12AE0616F0016B000 /* Polyline.xcframework */; };
 		99695DB32AE061700016B000 /* Polyline.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 99695DB12AE0616F0016B000 /* Polyline.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		99695DB92AE061F60016B000 /* Mapbox in Frameworks */ = {isa = PBXBuildFile; productRef = 99695DB82AE061F60016B000 /* Mapbox */; };
-		99AE304C2AE0BAC700765CA6 /* Mapbox in Frameworks */ = {isa = PBXBuildFile; productRef = 99AE304B2AE0BAC700765CA6 /* Mapbox */; };
+		999035CD2AE6222B00191681 /* Mapbox in Frameworks */ = {isa = PBXBuildFile; productRef = 999035CC2AE6222B00191681 /* Mapbox */; };
 		AEAB390D20D7F4F4008F4E54 /* subLaneInstructions.json in Resources */ = {isa = PBXBuildFile; fileRef = AEAB390C20D7F4F4008F4E54 /* subLaneInstructions.json */; };
 		AEAB390E20D7F508008F4E54 /* subLaneInstructions.json in Resources */ = {isa = PBXBuildFile; fileRef = AEAB390C20D7F4F4008F4E54 /* subLaneInstructions.json */; };
 		AEAB390F20D7F50A008F4E54 /* subLaneInstructions.json in Resources */ = {isa = PBXBuildFile; fileRef = AEAB390C20D7F4F4008F4E54 /* subLaneInstructions.json */; };
@@ -412,7 +411,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				99695DB22AE061700016B000 /* Polyline.xcframework in Frameworks */,
-				99695DB92AE061F60016B000 /* Mapbox in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -438,7 +436,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				DADD27F71E5AC8E900D31FAD /* MapboxDirections.framework in Frameworks */,
-				99AE304C2AE0BAC700765CA6 /* Mapbox in Frameworks */,
+				999035CD2AE6222B00191681 /* Mapbox in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -892,7 +890,6 @@
 			);
 			name = MapboxDirections;
 			packageProductDependencies = (
-				99695DB82AE061F60016B000 /* Mapbox */,
 			);
 			productName = MapboxDirections;
 			productReference = DA6C9D881CAE442B00094FBC /* MapboxDirections.framework */;
@@ -933,7 +930,7 @@
 			);
 			name = "Example (Swift)";
 			packageProductDependencies = (
-				99AE304B2AE0BAC700765CA6 /* Mapbox */,
+				999035CC2AE6222B00191681 /* Mapbox */,
 			);
 			productName = "Directions Example";
 			productReference = DADD27B51E5AAAD800D31FAD /* Example (Swift).app */;
@@ -1017,7 +1014,7 @@
 			);
 			mainGroup = DD6254451AE70C1700017857;
 			packageReferences = (
-				99695DB52AE061EF0016B000 /* XCRemoteSwiftPackageReference "trackasia-gl-native-distribution" */,
+				999035CB2AE6222B00191681 /* XCRemoteSwiftPackageReference "trackasia-gl-native-distribution" */,
 			);
 			productRefGroup = DD62544F1AE70C1700017857 /* Products */;
 			projectDirPath = "";
@@ -1964,6 +1961,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				"EXCLUDED_ARCHS[sdk=iphoneos*]" = "";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -2021,6 +2019,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				"EXCLUDED_ARCHS[sdk=iphoneos*]" = "";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -2137,25 +2136,20 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		99695DB52AE061EF0016B000 /* XCRemoteSwiftPackageReference "trackasia-gl-native-distribution" */ = {
+		999035CB2AE6222B00191681 /* XCRemoteSwiftPackageReference "trackasia-gl-native-distribution" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/track-asia/trackasia-gl-native-distribution";
 			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.0.1;
+				branch = 1.0.2;
+				kind = branch;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		99695DB82AE061F60016B000 /* Mapbox */ = {
+		999035CC2AE6222B00191681 /* Mapbox */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 99695DB52AE061EF0016B000 /* XCRemoteSwiftPackageReference "trackasia-gl-native-distribution" */;
-			productName = Mapbox;
-		};
-		99AE304B2AE0BAC700765CA6 /* Mapbox */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 99695DB52AE061EF0016B000 /* XCRemoteSwiftPackageReference "trackasia-gl-native-distribution" */;
+			package = 999035CB2AE6222B00191681 /* XCRemoteSwiftPackageReference "trackasia-gl-native-distribution" */;
 			productName = Mapbox;
 		};
 /* End XCSwiftPackageProductDependency section */

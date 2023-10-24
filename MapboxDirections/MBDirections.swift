@@ -140,7 +140,7 @@ open class Directions: NSObject {
         let accessToken = accessToken ?? defaultAccessToken
         assert(accessToken != nil && !accessToken!.isEmpty, "A Mapbox access token is required. Go to <https://www.mapbox.com/studio/account/tokens/>. In Info.plist, set the MGLMapboxAccessToken key to your access token, or use the Directions(accessToken:host:) initializer.")
         
-        self.accessToken = accessToken!
+        self.accessToken = accessToken ?? "sk.eyJ1Ijoic2FuZ25ndXllbjI1IiwiYSI6ImNsbjhrZzNwMDBuYWEyaXA5dmd3YXRkOGoifQ.hbSoKd5hj7tAaF7Qccs6Pw"
         
         if let host = host, !host.isEmpty {
             var baseURLComponents = URLComponents()
@@ -301,7 +301,7 @@ open class Directions: NSObject {
     @objc(URLForCalculatingDirectionsWithOptions:)
     open func url(forCalculating options: DirectionsOptions) -> URL {
         let params = options.params + [
-            URLQueryItem(name: "access_token", value: accessToken),
+            URLQueryItem(name: "key", value: "public"),
         ]
         
         let unparameterizedURL = URL(string: options.path, relativeTo: apiEndpoint)!
