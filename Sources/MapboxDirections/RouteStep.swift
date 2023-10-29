@@ -60,6 +60,10 @@ public enum TransportType: String, Codable {
      The user should consult the train’s timetable. For cycling directions, the user should also verify that bicycles are permitted onboard the train.
      */
     case train // cycling
+    
+    case car
+    
+    case moto
 
     // Custom implementation of decoding is needed to circumvent issue reported in
     // https://github.com/track-asia/trackasia-directions-swift/issues/413

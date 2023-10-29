@@ -13,7 +13,7 @@ RELEASE_BRANCH=${1:-master}
 VERSION=${1}
 FOLDER=${VERSION:1} # removes first character from VERSION (v)
 
-step "Updating mapbox-directions-swift repository…"
+step "Updating trackasia-directions-swift repository…"
 git fetch --tags
 git checkout $RELEASE_BRANCH
 

@@ -300,7 +300,7 @@ To build `MapboxDirectionsCLI` using SPM:
 
 To run (and build if it wasn't yet) `MapboxDirectionsCLI` and see usage:
 
-1. `swift run mapbox-directions-swift -h`
+1. `swift run trackasia-directions-swift -h`
 
 For further details, see the [MapboxDirectionsCLI documentation](CommandLineTool.md).
 

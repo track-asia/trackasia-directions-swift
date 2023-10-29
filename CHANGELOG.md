@@ -73,7 +73,7 @@
 * Types that correspond to objects in the Mapbox Directions API response, such as `RouteResponse`, `RouteRefreshResponse`, `MatchResponse`, and `RouteStep`, now conform to the `ForeignMemberContainer` and `ForeignMemberClassContainer` protocols. Types that conform to these protocols can persist unrecognized properties in the response, such as properties that are in beta, even after coding and decoding. You can access these properties using the `ForeignMemberContainer.foreignMembers` and `ForeignMemberClassContainer.foreignMembers` properties. ([#669](https://github.com/track-asia/trackasia-directions-swift/pull/669))
 * Fixed an issue where `RouteStep.distance`, `RouteStep.expectedTravelTime` and `RouteStep.typicalTravelTime` were rounded to one decimal place when being encoded. ([#697](https://github.com/track-asia/trackasia-directions-swift/pull/697))
 * Fixed an issue where decoding a `RouteResponse` incorrectly set the `Waypoint.snappedDistance` property to `nil`. ([#669](https://github.com/track-asia/trackasia-directions-swift/pull/669))
-* The `mapbox-directions-swift` command line tool now requests routes from the Mapbox Directions API if no input file is specified. ([#576](https://github.com/track-asia/trackasia-directions-swift/pull/576))
+* The `trackasia-directions-swift` command line tool now requests routes from the Mapbox Directions API if no input file is specified. ([#576](https://github.com/track-asia/trackasia-directions-swift/pull/576))
 
 ## v2.4.0
 
@@ -115,7 +115,7 @@
 * Carthage v0.38 or above is now required for installing this SDK if you use Carthage. ([#548](https://github.com/track-asia/trackasia-directions-swift/pull/548))
 * Xcode 12.0 or above is now required to build MapboxDirections from source. ([#548](https://github.com/track-asia/trackasia-directions-swift/pull/548))
 * You can fully build this SDK on Macs with Apple Silicon. ([#548](https://github.com/track-asia/trackasia-directions-swift/pull/548))
-* The `mapbox-directions-swift` command line tool can no longer be built using Carthage. It now requires [swift-argument-parser](https://github.com/apple/swift-argument-parser) v1.0.0 or above. ([#606](https://github.com/track-asia/trackasia-directions-swift/pull/606))
+* The `trackasia-directions-swift` command line tool can no longer be built using Carthage. It now requires [swift-argument-parser](https://github.com/apple/swift-argument-parser) v1.0.0 or above. ([#606](https://github.com/track-asia/trackasia-directions-swift/pull/606))
 
 ### Other changes
 
@@ -478,7 +478,7 @@ This release includes the ability to make a [Mapbox Map Matching request](https:
 
 ## v0.6.0
 
-This is a complete rewrite of mapbox-directions-swift that focuses on making the API more Swift-like in Swift but also adds Objective-C support ([#47](https://github.com/track-asia/trackasia-directions-swift/pull/47)). The goal is no longer to be a drop-in replacement for MapKit’s MKDirections API, but the library continues to use terminology familiar to Cocoa and Cocoa Touch developers. This version includes a number of breaking changes:
+This is a complete rewrite of trackasia-directions-swift that focuses on making the API more Swift-like in Swift but also adds Objective-C support ([#47](https://github.com/track-asia/trackasia-directions-swift/pull/47)). The goal is no longer to be a drop-in replacement for MapKit’s MKDirections API, but the library continues to use terminology familiar to Cocoa and Cocoa Touch developers. This version includes a number of breaking changes:
 
 * Most types and methods can now be used in Objective-C.
 * Removed the `MB` class prefix from Swift but kept it for Objective-C. If any type conflicts with a type in your application’s module, prefix it with `MapboxDirections.`.
