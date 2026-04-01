@@ -1,0 +1,4 @@
+[credential]
+    helper = osxkeychain
+[credential "https://github.com"]
+    username = sunny0092
