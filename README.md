@@ -1,6 +1,6 @@
-# MaplibreDirections
+# TrackAsiaDirections
 
-The MaplibreDirections SDK for iOS is built on a for of the MapboxDirections SDK v.023.
+The TrackAsiaDirections SDK for iOS is built on a fork of the MapboxDirections SDK v0.23.
 
 MapboxDirections.swift makes it easy to connect your iOS, macOS, tvOS, or watchOS application to the [Mapbox Directions API](https://www.mapbox.com/directions/) and [Mapbox Map Matching API](https://www.mapbox.com/directions/). Quickly get driving, cycling, or walking directions, whether the trip is nonstop or it has multiple stopping points, all using a simple interface reminiscent of MapKit’s `MKDirections` API. Fit a GPX trace to the [OpenStreetMap](https://www.openstreetmap.org/) road network. The Mapbox Directions and Map Matching APIs are powered by the [OSRM](http://project-osrm.org/) routing engine.
 
@@ -25,7 +25,7 @@ If you are looking to include this inside your project, you have to follow the t
 Specify the following dependency in your [Carthage](https://github.com/Carthage/Carthage) Cartfile:
 
 ```cartfile
-github "mapbox/MapboxDirections.swift" ~> 0.23
+github "track-asia/trackasia-directions-swift" ~> 0.23
 ```
 
 Or in your [CocoaPods](http://cocoapods.org/) Podfile:
