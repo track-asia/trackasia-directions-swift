@@ -140,7 +140,7 @@ open class Directions: NSObject {
         let accessToken = accessToken ?? defaultAccessToken
         assert(accessToken != nil && !accessToken!.isEmpty, "A Mapbox access token is required. Go to <https://www.mapbox.com/studio/account/tokens/>. In Info.plist, set the MGLMapboxAccessToken key to your access token, or use the Directions(accessToken:host:) initializer.")
         
-        self.accessToken = accessToken ?? "sk.eyJ1Ijoic2FuZ25ndXllbjI1IiwiYSI6ImNsbjhrZzNwMDBuYWEyaXA5dmd3YXRkOGoifQ.hbSoKd5hj7tAaF7Qccs6Pw"
+        self.accessToken = accessToken ?? "YOUR_TRACKASIA_ACCESS_TOKEN"
         
         if let host = host, !host.isEmpty {
             var baseURLComponents = URLComponents()
