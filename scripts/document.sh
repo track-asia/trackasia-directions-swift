@@ -32,7 +32,7 @@ jazzy \
     --config docs/jazzy.yml \
     --sdk iphonesimulator \
     --module-version ${VERSION} \
-    --github-file-prefix "https://github.com/mapbox/MapboxDirections.swift/tree/v${VERSION}" \
+    --github-file-prefix "https://github.com/track-asia/trackasia-directions-swift/tree/v${VERSION}" \
     --documentation=docs/guides/*.md \
     --root-url "https://mapbox.github.io/mapbox-navigation-ios/directions/${VERSION}/" \
     --theme ${THEME} \
