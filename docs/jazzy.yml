@@ -1,7 +1,7 @@
 module: MapboxDirections
 author: Mapbox
 author_url: https://www.mapbox.com/directions/
-github_url: https://github.com/mapbox/MapboxDirections.swift
+github_url: https://github.com/track-asia/trackasia-directions-swift
 dash_url: https://www.mapbox.com/mapbox-navigation-ios/directions/docsets/MapboxDirections.xml
 copyright: '© 2014–2017 [Mapbox](https://www.mapbox.com/). See [license](https://github.com/mapbox/MapboxDirections.swift/blob/master/LICENSE.md) for more details.'
 
