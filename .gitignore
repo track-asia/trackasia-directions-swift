@@ -10,3 +10,6 @@ Carthage/Build
 Carthage/Checkouts
 /build
 /documentation
+.history/
+.env
+signing-key.gpg
